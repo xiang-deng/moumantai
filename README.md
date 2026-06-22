@@ -4,7 +4,7 @@
 
 # Moumantai
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/xiang-deng/moumantai)
 
 **Moumantai** (冇問題 / no problem) is an open-source, self-hosted runtime for personal apps that can be owned, adapted, and used across the devices around you.
 
