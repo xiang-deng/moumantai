@@ -1,0 +1,28 @@
+{
+  "name": "@moumantai/protocol",
+  "description": "Moumantai wire protocol — protobuf SSOT, generated TypeScript bindings, and the design-system token codegen.",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./generated/moumantai/v1": "./src/generated/moumantai/v1/index.ts",
+    "./design-system": "./design-system/generated/design-system.ts",
+    "./design-system/sdk-types": "./design-system/generated/sdk-types.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "fixture-roundtrip": "tsx scripts/fixture-roundtrip.ts"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "2.12.0"
+  },
+  "devDependencies": {
+    "@bufbuild/buf": "1.68.4",
+    "@bufbuild/protoc-gen-es": "2.12.0",
+    "typescript": "^5.6.0"
+  }
+}

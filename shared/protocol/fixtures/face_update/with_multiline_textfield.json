@@ -1,0 +1,33 @@
+{
+  "scope": "app:notes",
+  "appId": "notes",
+  "faceId": "compose",
+  "components": [
+    { "id": "root", "scaffold": { "topBar": "bar", "body": "content" } },
+    { "id": "bar", "topBar": { "title": { "literal": "New note" } } },
+    {
+      "id": "content",
+      "column": { "children": ["title_field", "body_field"], "spacing": 12 }
+    },
+    {
+      "id": "title_field",
+      "textField": {
+        "value": { "path": "/draft/title" },
+        "label": "Title",
+        "placeholder": "What's it about?"
+      }
+    },
+    {
+      "id": "body_field",
+      "textField": {
+        "value": { "path": "/draft/body" },
+        "label": "Body",
+        "placeholder": "Write something…",
+        "multiline": true
+      }
+    }
+  ],
+  "data": {
+    "draft": { "title": "", "body": "" }
+  }
+}

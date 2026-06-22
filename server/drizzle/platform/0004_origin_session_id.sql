@@ -1,0 +1,1 @@
+ALTER TABLE `messages` ADD `origin_session_id` text;

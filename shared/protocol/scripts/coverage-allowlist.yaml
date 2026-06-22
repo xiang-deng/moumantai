@@ -1,0 +1,45 @@
+# Renderer coverage lint allowlist.
+#
+# Each entry MUST be accompanied by a comment explaining why a renderer
+# legitimately diverges from full coverage. Drop-by-default; allowlist is
+# the escape hatch for documented exceptions.
+#
+# Schema:
+#   <renderer_key>:
+#     _components: [MsgName, ...]   # Skip these components entirely
+#     <MsgName>: [field_name, ...]  # Skip these specific fields
+#     Modifier: [field_name, ...]   # Skip these Modifier fields
+#
+# Renderer keys: phone, wear, pwa, esp32.
+
+phone: {}
+
+wear:
+  # Wear chrome uses M3 AppScaffold (TimeText curved top, ScrollIndicator
+  # curved right). No top-bar nav action concept; chrome doesn't expose a
+  # navigation slot. TopBar.title surfaces via ListHeader inline; nav is
+  # done via swipe / rotary.
+  TopBarComponent: [navigation_action]
+  # Wear has no soft keyboard surface in our renderer. TextField renders as
+  # a FilledTonalButton-style read-only display; keyboard_type is moot.
+  TextFieldComponent: [keyboard_type]
+  # Wear's small canvas can't fit a tab strip; Tabs renderer shows only the
+  # currently-selected tab_content (selected drives content swap via
+  # action+selected binding). tab_labels would never have room.
+  TabsComponent: [tab_labels]
+  # Wear's M3 FilledTonalButton list-item idiom exposes label /
+  # secondaryLabel / icon slots; there is no trailing-content slot. Inline
+  # controls (Switch as ListItem trailing) are not supported in the watch
+  # list idiom. Authors should use a Row containing both for that pattern.
+  ListItemComponent: [trailing_content]
+
+pwa: {}
+
+esp32:
+  # ESP32 panel chrome doesn't have a top-bar nav action. The face's chrome
+  # is the LVGL screen border; nav happens via rotary or face switch.
+  TopBarComponent: [navigation_action]
+  # ESP32 deliberately skips Image components — render_image draws a hidden
+  # 0x0 widget (see clients/esp32/spec.md), so there is no rendered surface
+  # for the `alt` text to attach to.
+  ImageComponent: [alt]

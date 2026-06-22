@@ -1,0 +1,95 @@
+# __APP_NAME__ — design
+
+> This file is the Phase-1 contract. Write it before any `.ts`. See
+> `.claude/skills/build-moumantai-app/references/design-doc-rubric.md`.
+
+## Product brief
+
+TODO: one sentence describing __APP_NAME__ and who it's for.
+
+**User stories**
+- US-1: As a user, I can TODO.
+- US-2: As a user, I can TODO.
+- US-3: As a user, I can TODO.
+
+**Non-goals**: TODO — what this app intentionally does not do.
+
+## Data model
+
+### `TODO_table_plural`
+
+| Column | Type | Notes | Justified by |
+|---|---|---|---|
+| id | uuid | auto via `...id()` | — |
+| TODO_col | text notnull | TODO | US-1 |
+| created_at / updated_at | via `...timestamps()` | — | — |
+
+## Tool inventory
+
+### `TODO_verb_noun`
+- Purpose: TODO
+- Params: TODO (string/number/boolean only; JSON-stringify structured inputs)
+- Success: returns `{ ... }`; DB state change: TODO
+- Failure: TODO (or "none expected")
+- Story: US-N
+
+### `TODO_another_tool`
+...
+
+## Face inventory
+
+> Most apps have 2–4 faces. A single-face app is rare — justify if you go that route.
+> Each face gets its own subdirectory `apps/__APP_ID__/faces/<face-id>/`.
+
+### `TODO_primary_face_id` (position: 0) — the default landing view
+
+**Resolver output shape (the contract — tests assert this literally):**
+```ts
+{
+  TODO_group: {
+    TODO_field: <type>,  // description, bound by pathRef('/TODO_group/TODO_field')
+  },
+  TODO_list_name: [
+    { TODO_row_field: <type> }  // bound inside list template via pathRef('$.TODO_row_field')
+  ],
+}
+```
+
+**Variants:**
+- `faces/TODO_primary_face_id/TODO_primary_face_id.ts` — compact (default; watch, iot-small; no TopBar; spacing 8; circular progress where applicable)
+- `faces/TODO_primary_face_id/TODO_primary_face_id.expanded.ts` — phone (TopBar title "<Face Label>"; spacing 16, padding 16; primary action chip/FAB)
+
+**Key components:**
+- `progress('TODO_ring', pathRef('/TODO_group/TODO_percent'), 100, { variant: 'circular' })`
+- `text('TODO_value', pathRef('/TODO_group/TODO_field'), { typography: 'displayLarge' })`
+- `list('TODO_list', '/TODO_list_name', 'TODO_row')`
+- `listItem('TODO_row', pathRef('$.TODO_field'), { supporting: pathRef('$.TODO_sub'), trailing_content: 'TODO_trail' })`
+
+### `TODO_secondary_face_id` (position: 1)
+
+Resolver output, variants, components — same structure. Typical role: history / activity / list of past records.
+
+### `TODO_third_face_id` (position: 2)
+
+Typical role: goals / settings / details view.
+
+## Size-class plan
+
+- Compact (default): TODO what's visible, what's hidden
+- Expanded: TODO extras vs compact
+- Medium: falls back to default unless TODO reason to ship
+
+## Test plan
+
+### Integration (`server/tests/integration/__APP_ID__.test.ts`)
+- boots + migrates
+- registers all tools + faces
+- For each tool, one `it(...)`: call `execute`, assert return shape AND DB state
+- For each face, one `it(...)`: seed rows, call resolver, assert output matches the declared shape
+- For each delete/update tool, one "not-found returns error" case
+
+### E2E (`server/tests/e2e/test___APP_ID_UNDERSCORE__.py`)
+- `test_launcher_lists_app` — `__APP_NAME__` visible in device panel
+- `test_compact_face_renders` — on default device (watch), initial expected text visible
+- `test_expanded_variant_renders` — switch to phone, TopBar title visible
+- `test_tool_invocation_updates_face` — invoke a tool, reload, face reflects mutation

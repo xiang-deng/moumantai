@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+vars:
+  WORKSPACE_ID: pwa
+  WORKSPACE_NAME: 'Progressive Web App (Tailscale-served phone client)'
+  WORKSPACE_TYPE: client
+  FORM_FACTOR: phone
+  PLATFORM: browser
+  STACK: 'React 18 + Vite 6 + vite-plugin-pwa + Vitest 4'
+tasks:
+  dev:
+    desc: 'Vite dev server on :5174'
+    cmds: [npm run dev]
+  build:
+    desc: 'Type-check + production Vite build (includes SW generation)'
+    cmds: [npm run build]
+  preview:
+    desc: 'Serve the production build locally (tests SW lifecycle)'
+    cmds: [npm run preview]
+  serve:
+    # Installable PWA preview. Port 4173 is intentionally distinct from the
+    # server (3000) and pwa:dev (5174).
+    # NOTE: the override var is PREVIEW_PORT, *not* PORT — go-task pulls env vars
+    # into templates, and `PORT` is already the ESP32 serial port (e.g. COM3) in
+    # .mise.local.toml, which would leak in and break `--port`.
+    # Override: `VITE_WS_URL=ws://host:port PREVIEW_PORT=4180 task pwa:serve`.
+    desc: "Build + serve the INSTALLABLE PWA (production service worker) at http://localhost:4173, pointed at the local server (ws://localhost:3000). Open it and use the browser's Install action."
+    vars:
+      PREVIEW_PORT: '{{.PREVIEW_PORT | default "4173"}}'
+    env:
+      VITE_WS_URL: '{{.VITE_WS_URL | default "ws://localhost:3000"}}'
+    cmds:
+      - npm run build
+      - npm run preview -- --host 127.0.0.1 --port {{.PREVIEW_PORT}}
+  serve:tailscale:
+    desc: 'Build + serve the installable PWA for Tailscale Serve (HTTPS :443, WSS :8443). Requires TAILSCALE_HOST=<host>.<tailnet>.ts.net.'
+    requires:
+      vars: [TAILSCALE_HOST]
+    env:
+      VITE_WS_URL: 'wss://{{.TAILSCALE_HOST}}:8443'
+    cmds:
+      - npm run build
+      - npm run preview -- --host 127.0.0.1 --port 4173
+  typecheck:
+    desc: 'TypeScript no-emit check'
+    cmds: [npm run typecheck]
+  test:
+    desc: 'Run unit tests (Vitest)'
+    cmds: [npm run test]
+  test-watch:
+    desc: 'Vitest watch mode'
+    cmds: ["npm run 'test:watch'"]

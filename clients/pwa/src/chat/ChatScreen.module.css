@@ -1,0 +1,381 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--bg);
+}
+
+.messages {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4);
+}
+
+.messages::-webkit-scrollbar {
+  width: 6px;
+}
+.messages::-webkit-scrollbar-thumb {
+  background: var(--bg-3);
+  border-radius: 3px;
+}
+
+.exhausted {
+  text-align: center;
+  color: var(--fg-3);
+  font-size: var(--ts-13);
+  padding: var(--space-3) 0;
+}
+
+.composer {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
+  background: var(--bg);
+  border-top: 1px solid var(--hairline);
+}
+
+.input {
+  flex: 1 1 auto;
+  resize: none;
+  min-height: 40px;
+  max-height: 120px;
+  padding: 10px var(--space-3);
+  background: var(--bg-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: var(--ts-15);
+  outline: none;
+  transition: border-color var(--m-fade) var(--ease-out);
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.input:disabled {
+  opacity: 0.5;
+}
+
+.iconButton,
+.sendButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  flex-shrink: 0;
+  transition:
+    background var(--m-tap) var(--ease-out),
+    transform var(--m-tap) var(--ease-out);
+}
+
+.iconButton {
+  background: var(--bg-2);
+  color: var(--fg-2);
+}
+
+.sendButton {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.iconButton:active,
+.sendButton:active {
+  transform: scale(0.97);
+}
+
+.iconButton:disabled,
+.sendButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.thinkingRow {
+  display: flex;
+  justify-content: flex-start;
+  margin: var(--space-2) 0;
+}
+
+.thinkingBubble {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  background: var(--bg-2);
+  border-radius: var(--radius);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fg-3);
+  animation: dot-pulse 1.2s ease-in-out infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.dot:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+@keyframes dot-pulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Dev mode (draft editing)
+   ------------------------------------------------------------------------- */
+
+.tabPill {
+  display: flex;
+  gap: 2px;
+  align-self: center;
+  margin: var(--space-2) 0;
+  padding: 2px;
+  background: var(--bg-2);
+  border-radius: 999px;
+}
+
+.tabBtn {
+  border: none;
+  background: transparent;
+  color: var(--fg-3);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.tabActive {
+  background: var(--bg-0);
+  color: var(--fg-1);
+}
+
+.devRoot {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  border-top: 2px solid var(--accent, #9c27b0);
+}
+
+.devBanner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  padding: var(--space-2);
+  background: var(--bg-2);
+}
+
+.devChip {
+  border: 1px solid var(--border, var(--bg-3));
+  background: var(--bg-0);
+  color: var(--fg-1);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.devChip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.devDanger {
+  color: var(--error, #d33);
+}
+
+.devHint {
+  color: var(--fg-3);
+  font-size: 13px;
+}
+
+.readyPanel {
+  margin: var(--space-2);
+  padding: var(--space-3);
+  background: var(--bg-1);
+  border: 1px solid var(--accent, #9c27b0);
+  border-radius: var(--radius);
+}
+
+.readyBadge {
+  margin: 0 0 var(--space-2);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--success, #2e7d32);
+}
+.readySummary {
+  margin: 0 0 var(--space-2);
+  font-size: 14px;
+  color: var(--fg-1);
+}
+/* Long promote summaries otherwise dominate the surface and bury the chat —
+ * clamp to a few lines with a Show more/less toggle. */
+.readySummaryClamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.moreBtn {
+  border: none;
+  background: none;
+  color: var(--accent, #9c27b0);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0;
+  margin: 0 0 var(--space-2);
+  cursor: pointer;
+}
+.readyWarn {
+  margin: 0 0 var(--space-2);
+  font-size: 12px;
+  color: var(--error, #d33);
+}
+.readyActions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.promoteBtn {
+  border: none;
+  background: var(--accent, #9c27b0);
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 6px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.promoteBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.devError {
+  margin: var(--space-2) 0;
+  padding: 8px 12px;
+  background: color-mix(in srgb, var(--error, #d33) 12%, transparent);
+  color: var(--error, #d33);
+  border-radius: var(--radius);
+  font-size: 13px;
+}
+
+/* Edit-agent progress checklist (pinned above the dev message list). */
+.todosCard {
+  margin: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-1);
+  border: 1px solid color-mix(in srgb, var(--accent, #9c27b0) 40%, transparent);
+  border-radius: var(--radius);
+}
+
+/* Clickable header: toggles the checklist (auto-collapsed once all done). */
+.todosTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: 100%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fg-2);
+  margin-bottom: var(--space-1);
+}
+.todosChevron {
+  font-size: 10px;
+  color: var(--fg-3, var(--fg-2));
+}
+.todosCount {
+  margin-left: auto;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--fg-3, var(--fg-2));
+}
+
+/* Cap height so a long checklist scrolls within the card instead of pushing
+ * the conversation off-screen. */
+.todosList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 28vh;
+  overflow-y: auto;
+}
+
+.todoRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: 13px;
+  color: var(--fg-2);
+  padding: 2px 0;
+}
+
+.todoGlyph {
+  width: 1em;
+  flex: none;
+  text-align: center;
+  color: var(--fg-3, var(--fg-2));
+}
+
+.todoActive {
+  color: var(--fg-1);
+  font-weight: 600;
+}
+.todoActive .todoGlyph {
+  color: var(--accent, #9c27b0);
+}
+
+.todoDone {
+  color: var(--fg-3, var(--fg-2));
+}
+.todoDone .todoText {
+  text-decoration: line-through;
+}
+.todoDone .todoGlyph {
+  color: var(--success, #2e7d32);
+}
+
+.stopBtn {
+  margin-left: var(--space-2);
+  border: 1px solid var(--border, var(--bg-3));
+  background: var(--bg-0);
+  color: var(--fg-2);
+  font-size: 12px;
+  padding: 2px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+/* The dev composer reuses `.input` verbatim — same fill, border, font, and
+ * accent-on-focus as the main chat. The dev surface is already signalled by
+ * the [Chat|Dev] pill + the accent banner on `.devRoot`, so the input needs no
+ * distinct treatment (an always-on accent border read as an "outlined" field
+ * vs the main chat's "filled" one). */

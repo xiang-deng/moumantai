@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+vars:
+  WORKSPACE_ID: wear-os
+  WORKSPACE_NAME: 'Wear OS watch'
+  WORKSPACE_TYPE: client
+  FORM_FACTOR: watch
+  PLATFORM: wear-os
+  APP_ID: com.moumantai.client
+  MIN_SDK: 30
+  TARGET_SDK: 34
+  COMPILE_SDK: 36
+  STACK: 'Kotlin 2.0.21 + Wear Compose Material 3 1.6.1 + Compose BoM 2024.01.00 + AGP 8.7.3'
+  GRADLEW: '{{if eq OS "windows"}}{{.TASKFILE_DIR}}/gradlew.bat{{else}}./gradlew{{end}}'
+tasks:
+  build:
+    desc: 'Build debug APK'
+    cmds: ['{{.GRADLEW}} :app:assembleDebug']
+  install:
+    desc: 'Install debug APK to connected watch/emulator'
+    cmds: ['{{.GRADLEW}} :app:installDebug']
+  test:
+    desc: 'Run unit tests'
+    cmds: ['{{.GRADLEW}} :app:testDebugUnitTest']
+  format:
+    desc: 'Auto-format Kotlin (Spotless + ktlint from Maven)'
+    cmds: ['{{.GRADLEW}} :app:spotlessApply']
+  format-check:
+    desc: 'Verify Kotlin formatting (Spotless + ktlint); CI gate'
+    cmds: ['{{.GRADLEW}} :app:spotlessCheck']
+  test-form-semantics:
+    desc: 'Form-semantics conformance test only (driven by shared/protocol fixture)'
+    cmds:
+      [
+        '{{.GRADLEW}} :app:testDebugUnitTest --tests com.moumantai.wear.renderer.FormSemanticsConformanceTest',
+      ]
+  test-layout-resolution:
+    desc: 'Layout-resolution conformance test only (driven by shared/protocol fixture)'
+    cmds:
+      [
+        '{{.GRADLEW}} :app:testDebugUnitTest --tests com.moumantai.wear.renderer.LayoutResolutionConformanceTest',
+      ]
+  clean:
+    desc: 'Gradle clean'
+    cmds: ['{{.GRADLEW}} clean']

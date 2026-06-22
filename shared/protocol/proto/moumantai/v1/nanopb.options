@@ -1,0 +1,259 @@
+# nanopb static-allocation options for ESP32 generation.
+#
+# Per-field max_size constraints. nanopb requires upper bounds on every
+# variable-length field for static memory allocation. Values are tuned for
+# typical UI payloads (short ids, ~1 KB chat text, ~64-byte color values).
+#
+# Syntax: <fully.qualified.field.name> max_size:<bytes>
+# (Verified syntax — the `*` glob form does NOT work; spell out each field.)
+#
+# Field-number rule: every variable-length field on a message ESP32 decodes
+# must appear here.
+
+# ---------------------------------------------------------------------------
+# Strings: short identifiers (≤64 bytes)
+# ---------------------------------------------------------------------------
+
+# Session / conversation / message ids and scope strings.
+moumantai.v1.ServerHello.session_id        max_size:64
+moumantai.v1.ClientHello.current_app_id    max_size:64
+moumantai.v1.ClientHello.current_face_id   max_size:64
+moumantai.v1.ClientHello.device_id         max_size:64
+
+moumantai.v1.ResetConversationMsg.scope            max_size:64
+moumantai.v1.ResetNoticeMsg.scope                  max_size:64
+moumantai.v1.ResetNoticeMsg.conversation_id        max_size:64
+moumantai.v1.ResetNoticeMsg.requester_session_id   max_size:64
+moumantai.v1.ResetNoticeMsg.timestamp              max_size:32
+
+# Error messages.
+moumantai.v1.ErrorMessage.message       max_size:256
+moumantai.v1.ErrorMessage.client_msg_id max_size:64
+
+# Chat message identifiers + scope.
+moumantai.v1.ChatMessage.id                 max_size:64
+moumantai.v1.ChatMessage.scope              max_size:64
+moumantai.v1.ChatMessage.conversation_id    max_size:64
+moumantai.v1.ChatMessage.timestamp          max_size:32
+moumantai.v1.ChatMessage.client_msg_id      max_size:64
+moumantai.v1.ChatMessage.failure_reason     max_size:64
+moumantai.v1.ChatMessage.audio_url          max_size:512
+moumantai.v1.ChatMessage.origin_device_id   max_size:64
+
+# Chat content body — the only long-string field.
+moumantai.v1.ChatMessage.text               max_size:1024
+
+moumantai.v1.ChatInput.scope                  max_size:64
+moumantai.v1.ChatInput.text                   max_size:1024
+moumantai.v1.ChatInput.client_msg_id          max_size:64
+moumantai.v1.ChatInput.origin_conversation_id max_size:64
+moumantai.v1.ChatInput.image_mime_type        max_size:32
+
+# Chat window entries.
+moumantai.v1.ChatWindowEntry.id                 max_size:64
+moumantai.v1.ChatWindowEntry.text               max_size:1024
+moumantai.v1.ChatWindowEntry.turn_mode          max_size:32
+moumantai.v1.ChatWindowEntry.source             max_size:32
+moumantai.v1.ChatWindowEntry.client_msg_id      max_size:64
+moumantai.v1.ChatWindowEntry.failure_reason     max_size:64
+moumantai.v1.ChatWindowEntry.origin_device_id   max_size:64
+moumantai.v1.ChatWindowEntry.created_at         max_size:32
+
+moumantai.v1.ChatWindowMsg.scope            max_size:64
+moumantai.v1.ChatWindowMsg.conversation_id  max_size:64
+# entries: callback-decoded; storing 64 entries inline = 90 KB struct → busts the 320 KB heap
+# moumantai.v1.ChatWindowMsg.entries        max_count:64
+
+moumantai.v1.ChatUpdateMsg.scope             max_size:64
+moumantai.v1.ChatUpdateMsg.conversation_id   max_size:64
+moumantai.v1.ChatUpdateMsg.id                max_size:64
+moumantai.v1.ChatUpdateMsg.failure_reason    max_size:64
+moumantai.v1.ChatUpdateMsg.origin_device_id  max_size:64
+
+# Chat history pagination.
+moumantai.v1.FetchOlderMsg.scope            max_size:64
+moumantai.v1.ChatHistoryMsg.scope           max_size:64
+moumantai.v1.ChatHistoryMsg.conversation_id max_size:64
+
+# Audio + image binary frame headers (proto-encoded leading bytes).
+moumantai.v1.AudioChunkHeader.scope          max_size:64
+moumantai.v1.AudioChunkHeader.client_msg_id  max_size:64
+moumantai.v1.ImageChunkHeader.scope          max_size:64
+moumantai.v1.ImageChunkHeader.mime_type      max_size:32
+moumantai.v1.ImageChunkHeader.client_msg_id  max_size:64
+
+# TTS request body (kept short; sentence-level not paragraph-level).
+moumantai.v1.TTSRequest.text max_size:512
+
+# ---------------------------------------------------------------------------
+# Apps + faces
+# ---------------------------------------------------------------------------
+
+moumantai.v1.AppInfo.app_id  max_size:64
+moumantai.v1.AppInfo.label   max_size:64
+moumantai.v1.AppInfo.icon    max_size:64
+moumantai.v1.AppListMsg.apps max_count:16
+
+moumantai.v1.FaceInfo.face_id   max_size:64
+moumantai.v1.FaceInfo.label     max_size:64
+moumantai.v1.FaceListMsg.app_id max_size:64
+moumantai.v1.FaceListMsg.faces  max_count:16
+
+# Face update — the highest-volume payload.
+moumantai.v1.FaceUpdateMsg.scope      max_size:64
+moumantai.v1.FaceUpdateMsg.app_id     max_size:64
+moumantai.v1.FaceUpdateMsg.face_id    max_size:64
+# components: callback-decoded; ComponentDef contains a 23-variant union plus
+# every static buffer for max-sized children/options. 128 of those inline
+# would be ~700 KB — busts the 320 KB heap. Streamed into a heap-allocated
+# array of pointers in transport.c (parallel to the legacy protocol_parse.c).
+# moumantai.v1.FaceUpdateMsg.components max_count:128
+
+# Navigation.
+moumantai.v1.NavigateMsg.app_id       max_size:64
+moumantai.v1.NavigateMsg.face_id      max_size:64
+moumantai.v1.ViewingMsg.scope         max_size:64
+moumantai.v1.UiActionEscalated.scope  max_size:64
+
+# ---------------------------------------------------------------------------
+# Components — id + per-variant string fields
+# ---------------------------------------------------------------------------
+
+moumantai.v1.ComponentDef.id max_size:64
+
+# DynamicString values (literal/path).
+moumantai.v1.DynamicString.literal max_size:512
+moumantai.v1.DynamicString.path    max_size:128
+moumantai.v1.DynamicBool.path      max_size:128
+moumantai.v1.DynamicInt32.path     max_size:128
+moumantai.v1.DynamicDouble.path    max_size:128
+
+# Dimensions — keyword strings ('fill','wrap','auto').
+moumantai.v1.Dimension.keyword max_size:16
+
+# Modifiers.
+# (modifier sub-fields use DynamicString which already has max_size set.)
+
+# Atoms.
+moumantai.v1.TextComponent.typography  max_size:32
+moumantai.v1.TextComponent.color       max_size:64
+moumantai.v1.TextComponent.font_weight max_size:32
+moumantai.v1.TextComponent.text_align  max_size:32
+moumantai.v1.IconComponent.size        max_size:8
+moumantai.v1.ImageComponent.alt        max_size:128
+moumantai.v1.ImageComponent.fit        max_size:32
+moumantai.v1.DividerComponent.color    max_size:64
+
+# Layout — children lists. Each child is a 64-byte component id.
+moumantai.v1.ColumnComponent.children             max_count:32
+moumantai.v1.ColumnComponent.children             max_size:64
+moumantai.v1.ColumnComponent.vertical_arrangement max_size:32
+moumantai.v1.ColumnComponent.horizontal_alignment max_size:32
+moumantai.v1.RowComponent.children                max_count:16
+moumantai.v1.RowComponent.children                max_size:64
+moumantai.v1.RowComponent.horizontal_arrangement  max_size:32
+moumantai.v1.RowComponent.vertical_alignment      max_size:32
+moumantai.v1.CardComponent.children               max_count:32
+moumantai.v1.CardComponent.children               max_size:64
+moumantai.v1.CardComponent.variant                max_size:32
+moumantai.v1.BoxComponent.children                max_count:16
+moumantai.v1.BoxComponent.children                max_size:64
+moumantai.v1.BoxComponent.content_alignment       max_size:16
+moumantai.v1.BoxComponent.child_alignment         max_count:16
+moumantai.v1.BoxComponent.child_alignment         max_size:16
+
+# Chrome.
+moumantai.v1.ScaffoldComponent.top_bar max_size:64
+moumantai.v1.ScaffoldComponent.body    max_size:64
+moumantai.v1.ScaffoldComponent.fab     max_size:64
+moumantai.v1.TopBarComponent.actions   max_count:8
+moumantai.v1.TopBarComponent.actions   max_size:64
+
+# Actions.
+moumantai.v1.ButtonComponent.variant max_size:32
+moumantai.v1.ChipComponent.variant   max_size:32
+
+# Input.
+moumantai.v1.TextFieldComponent.label         max_size:64
+moumantai.v1.TextFieldComponent.placeholder   max_size:128
+moumantai.v1.TextFieldComponent.keyboard_type max_size:32
+moumantai.v1.TabsComponent.tab_labels         max_count:8
+moumantai.v1.TabsComponent.tab_labels         max_size:64
+moumantai.v1.TabsComponent.tab_content        max_count:8
+moumantai.v1.TabsComponent.tab_content        max_size:64
+moumantai.v1.SelectOption.label               max_size:64
+moumantai.v1.SelectOption.value               max_size:64
+moumantai.v1.SelectOptionList.options         max_count:32
+moumantai.v1.SelectOptions.path               max_size:128
+moumantai.v1.SelectComponent.label            max_size:64
+moumantai.v1.DateTimeInputComponent.label     max_size:64
+moumantai.v1.DateTimeInputComponent.mode      max_size:32
+moumantai.v1.SliderComponent.label            max_size:64
+
+# Data.
+moumantai.v1.ListChildren.path                  max_size:128
+moumantai.v1.ListChildren.component_id          max_size:64
+moumantai.v1.ListItemComponent.trailing_content max_size:64
+
+# Feedback. ProgressRingComponent + ProgressBarComponent each carry only a
+# `color` string; variant is implicit in the component type.
+moumantai.v1.ProgressRingComponent.color max_size:64
+moumantai.v1.ProgressBarComponent.color  max_size:64
+moumantai.v1.ModalComponent.children   max_count:32
+moumantai.v1.ModalComponent.children   max_size:64
+
+# Chat — ui_blocks: stays callback (recursive ComponentDef).
+# moumantai.v1.ChatMessage.ui_blocks  -- intentionally callback (recursive)
+
+# ---------------------------------------------------------------------------
+# Actions
+# ---------------------------------------------------------------------------
+
+# Component-attached Action: one tool name + a Struct of args. Args may
+# carry `{path: "..."}` placeholders that the dispatcher resolves
+# client-side before sending an InvokeToolMsg.
+moumantai.v1.Action.tool max_size:64
+# Submsg callback so the ESP32 decoder can install struct_fields_cb on
+# Action.args.fields BEFORE the body decodes. Without this, every action's
+# args is silently skipped on the wire (e.g. filter chips like
+# `invokeTool('view_scoreboard', {day: 'today'})` would lose their day arg).
+moumantai.v1.Action.args submsg_callback:true
+# Submsg callback at the ComponentDef.component oneof variants — fires when
+# any action-bearing variant is encountered, giving the C decoder a chance
+# to install Action.cb_args before nanopb's body-decode of the variant
+# reaches the Action.args submsg. Without these, Action.cb_args's funcs are
+# wiped by the oneof union memset that precedes variant body decode. The
+# variants listed here are exactly the ones whose generated structs have
+# an `action` field (per shared/protocol/proto/moumantai/v1/components.proto).
+moumantai.v1.ComponentDef.button           submsg_callback:true
+moumantai.v1.ComponentDef.chip             submsg_callback:true
+moumantai.v1.ComponentDef.switch_toggle    submsg_callback:true
+moumantai.v1.ComponentDef.check_box        submsg_callback:true
+moumantai.v1.ComponentDef.slider           submsg_callback:true
+moumantai.v1.ComponentDef.tabs             submsg_callback:true
+moumantai.v1.ComponentDef.select           submsg_callback:true
+moumantai.v1.ComponentDef.date_time_input  submsg_callback:true
+moumantai.v1.ComponentDef.list_item        submsg_callback:true
+moumantai.v1.ComponentDef.fab              submsg_callback:true
+
+# Client → server invoke envelope.
+moumantai.v1.InvokeToolMsg.tool_name         max_size:64
+moumantai.v1.InvokeToolMsg.source_face_id    max_size:64
+moumantai.v1.InvokeToolMsg.client_request_id max_size:64
+# Submsg callback so the ESP32 encoder can install an encode callback on
+# args.fields just before writing the InvokeToolMsg body. Mirrors the
+# decode-side change above — keeps round-tripping args symmetric.
+moumantai.v1.InvokeToolMsg.args submsg_callback:true
+
+# google.protobuf.Value — used by FaceUpdateMsg.data and Action.args.
+# Value's `kind` oneof has two SUBMSG variants (struct_value, list_value)
+# and a CALLBACK STRING variant (string_value). The SUBMSG variants use
+# parent-side submsg_callback because nanopb memsets oneof slots on each
+# decode iteration, which would clobber any pre-installed callback. The
+# string variant becomes a max_size buffer so no callback lives in the
+# union at all. FieldsEntry.key is given a fixed buffer to avoid per-entry
+# heap allocation on the decode hot path.
+google.protobuf.Struct.FieldsEntry.key   max_size:64
+google.protobuf.Value.string_value       max_size:512
+google.protobuf.Value.struct_value       submsg_callback:true
+google.protobuf.Value.list_value         submsg_callback:true

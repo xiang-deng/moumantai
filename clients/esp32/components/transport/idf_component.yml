@@ -1,0 +1,7 @@
+dependencies:
+  espressif/esp_websocket_client: '^1'
+  # nanopb runtime: provides pb.h + the encode/decode runtime that the
+  # generated `*.pb.c` files under components/transport/generated/proto/
+  # link against. transport.c speaks binary protobuf via subprotocol
+  # `moumantai.v1.proto`.
+  nikas-belogolov/nanopb: '^1.0.0'

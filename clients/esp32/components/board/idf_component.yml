@@ -1,0 +1,3 @@
+dependencies:
+  espressif/esp_lcd_touch_gt911: '^1'
+  atanisoft/esp_lcd_ili9488: '^1'

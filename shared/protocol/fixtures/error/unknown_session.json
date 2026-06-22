@@ -1,0 +1,4 @@
+{
+  "code": "PROTOCOL_ERROR_CODE_UNKNOWN_SESSION",
+  "message": "Session expired; reconnect with fresh hello"
+}

@@ -1,0 +1,5 @@
+{
+  "code": "PROTOCOL_ERROR_CODE_STALE_CONVERSATION",
+  "message": "Conversation has been reset; drop this offline-queue item",
+  "clientMsgId": "5b9b13a7-deba-4c25-bf66-2bd6b34f0099"
+}

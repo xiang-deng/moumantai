@@ -1,0 +1,22 @@
+import { text, list, listItem, pathRef } from 'moumantai/ui'
+import type { ComponentDef } from 'moumantai/ui'
+
+/**
+ * Shared body components for the __FACE_ID__ face — reused by both compact
+ * (default) and expanded variants. Edit both `pathRef` paths here if the
+ * resolver shape changes.
+ */
+export function __FACE_ID_CAMEL__Body(): ComponentDef[] {
+  return [
+    // Example:
+    // text('total_label', 'Total Today', { typography: 'labelMedium' }),
+    // text('total_value', pathRef('/summary/total_calories'), { typography: 'displayLarge' }),
+    // list('recent_list', '/recent_meals', 'meal_row'),
+    // listItem('meal_row', pathRef('$.name'), {
+    //   supporting: pathRef('$.meal_type'),
+    //   trailing_content: 'meal_calories',
+    // }),
+    // text('meal_calories', pathRef('$.calories')),
+    text('placeholder', 'TODO: author __FACE_ID__ body'),
+  ]
+}

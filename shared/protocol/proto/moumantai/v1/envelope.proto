@@ -1,0 +1,63 @@
+// Top-level envelope: every WebSocket text frame deserializes to a
+// `ClientMessage` or `ServerMessage` oneof. Audio/image bytes flow via the
+// binary frame envelope (chat.proto headers), not through these oneofs.
+
+syntax = "proto3";
+
+package moumantai.v1;
+
+import "moumantai/v1/actions.proto";
+import "moumantai/v1/apps.proto";
+import "moumantai/v1/chat.proto";
+import "moumantai/v1/drafts.proto";
+import "moumantai/v1/lifecycle.proto";
+
+option java_package = "com.moumantai.protocol.v1";
+
+// ---------------------------------------------------------------------------
+// Client → server
+// ---------------------------------------------------------------------------
+
+// All client → server messages.
+message ClientMessage {
+  oneof payload {
+    ClientHello hello = 1;
+    ChatInput chat_input = 2;
+    TTSRequest tts_request = 3;
+    ViewingMsg viewing = 4;
+    ResetConversationMsg reset_conversation = 5;
+    InvokeToolMsg invoke_tool = 6;
+    FetchOlderMsg fetch_older = 7;
+    PreviewOptInRequest preview_opt_in = 8;
+    DraftReloadRequest draft_reload = 9;
+    DraftPromoteRequest draft_promote = 10;
+    DraftDiscardRequest draft_discard = 11;
+    DraftTurnCancelRequest draft_turn_cancel = 12;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Server → client
+// ---------------------------------------------------------------------------
+
+// All server → client messages.
+message ServerMessage {
+  oneof payload {
+    ServerHello hello_ok = 1;
+    ChatMessage chat = 2;
+    ChatWindowMsg chat_window = 3;
+    ChatUpdateMsg chat_update = 4;
+    ResetNoticeMsg reset_notice = 5;
+    VoiceState voice_state = 6;
+    AppListMsg app_list = 7;
+    FaceListMsg face_list = 8;
+    FaceUpdateMsg face_update = 9;
+    NavigateMsg navigate = 10;
+    ErrorMessage error = 11;
+    UiActionEscalated ui_action_escalated = 12;
+    ChatHistoryMsg chat_history = 13;
+    DraftStateChanged draft_state_changed = 14;
+    DraftActionResult draft_action_result = 15;
+    ChatTodosUpdate chat_todos_update = 16;
+  }
+}

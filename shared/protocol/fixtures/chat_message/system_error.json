@@ -1,0 +1,10 @@
+{
+  "id": "9c5a7d11-1e7b-486c-b1d2-3aab93b7c003",
+  "scope": "app:spend-tracker",
+  "conversationId": "ad4cdf9e-bdd0-4eb1-9bc3-ac6c1c1c2233",
+  "role": "CHAT_ROLE_SYSTEM",
+  "text": "Tool call timed out after 30s",
+  "timestamp": "2026-04-25T12:35:30Z",
+  "status": "TURN_STATUS_TIMED_OUT",
+  "failureReason": "tool_timeout"
+}

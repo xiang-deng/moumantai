@@ -1,0 +1,135 @@
+# Material Symbols codepoints — icons used by Moumantai faces, manifests, and chrome.
+# Source: google/material-design-icons (Rounded variant).
+# Format: <icon_name> <hex_codepoint>   (one per line; comments start with #)
+#
+# To regenerate the LVGL font sources from this list:
+#   python3 clients/esp32/assets/fonts/build_unified_font.py --family icons
+# (requires `lv_font_conv` on PATH; see assets/fonts/README.md)
+#
+# This file is also consumed by components/renderer/icon_map.c at compile time
+# to map icon names (from manifests / face JSON) to glyph codepoints.
+
+# Navigation
+arrow_back            e5c4
+arrow_forward         e5c8
+arrow_upward          e5d8
+arrow_downward        e5db
+chevron_left          e5cb
+chevron_right         e5cc
+close                 e5cd
+more_horiz            e5d3
+more_vert             e5d4
+
+# State / status
+check                 e5ca
+check_circle          f0be
+cancel                e888
+error                 f8b6
+warning               f083
+info                  e88e
+help                  e8fd
+help_outline          e8fd
+radio_button_unchecked e836
+
+# Actions
+add                   e145
+add_circle            e3ba
+remove                e15b
+delete                e92e
+edit                  f097
+save                  e161
+refresh               e5d5
+replay                e042
+search                e8b6
+send                  e163
+settings              e8b8
+upload                f09b
+download              f090
+
+# Playback / audio
+play_arrow            e037
+pause                 e034
+stop                  e047
+skip_next             e044
+skip_previous         e045
+volume_up             e050
+volume_off            e04f
+mic                   e31d
+mic_off               e02b
+radio                 e03e
+
+# Nav destinations
+home                  e9b2
+dashboard             e871
+list                  e896
+chat                  e0c9
+person                f0d3
+group                 ea21
+notifications         e7f5
+login                 ea77
+logout                e9ba
+
+# Time
+today                 e8df
+event                 e878
+schedule              efd6
+alarm                 e855
+
+# Favorites / flags
+star                  f09a
+star_border           f09a
+favorite              e87e
+bookmark              e8e7
+flag                  f0c6
+
+# Capture
+photo_camera          e412
+
+# Food / diet
+restaurant            e56c
+fastfood              e57a
+local_cafe            eb44
+coffee                efef
+local_fire_department ef55
+whatshot              e80e
+
+# Fitness / health
+directions_run        e566
+fitness_center        eb43
+local_hospital        e548
+
+# Shopping / finance
+shopping_cart         e8cc
+shopping_bag          f1cc
+attach_money          e227
+account_balance_wallet e850
+payments              ef63
+receipt               e8b0
+receipt_long          ef6e
+savings               e2eb
+
+# Transit
+directions_car        eff7
+train                 e570
+
+# Weather / state
+wb_sunny              e430
+nightlight            f03d
+public                e80b
+
+# Input & connectivity
+keyboard              e312
+keyboard_return       e15e
+backspace             e14a
+wifi                  e63e
+bluetooth             e1a7
+battery_full          e1a5
+battery_empty         e88b
+cloud_done            e2bf
+cloud_off             e2c1
+power_settings_new    f8c7
+
+# Misc
+trending_up           e8e5
+movie                 e404
+smart_toy             f06c

@@ -1,0 +1,19 @@
+{
+  "comment": "Index of fixture corpora. Each entry describes the directory + message type tested by the cross-language round-trip orchestrator.",
+  "schema_version": 1,
+  "fixtures": [
+    { "dir": "client_hello", "message": "ClientHello", "package": "moumantai.v1" },
+    { "dir": "server_hello", "message": "ServerHello", "package": "moumantai.v1" },
+    { "dir": "error", "message": "ErrorMessage", "package": "moumantai.v1" },
+    { "dir": "chat_message", "message": "ChatMessage", "package": "moumantai.v1" },
+    { "dir": "voice_state", "message": "VoiceState", "package": "moumantai.v1" },
+    { "dir": "audio_chunk_header", "message": "AudioChunkHeader", "package": "moumantai.v1" },
+    { "dir": "image_chunk_header", "message": "ImageChunkHeader", "package": "moumantai.v1" },
+    { "dir": "navigate", "message": "NavigateMsg", "package": "moumantai.v1" },
+    { "dir": "viewing", "message": "ViewingMsg", "package": "moumantai.v1" },
+    { "dir": "reset_conversation", "message": "ResetConversationMsg", "package": "moumantai.v1" },
+    { "dir": "face_update", "message": "FaceUpdateMsg", "package": "moumantai.v1" },
+    { "dir": "fetch_older", "message": "FetchOlderMsg", "package": "moumantai.v1" },
+    { "dir": "chat_history", "message": "ChatHistoryMsg", "package": "moumantai.v1" }
+  ]
+}

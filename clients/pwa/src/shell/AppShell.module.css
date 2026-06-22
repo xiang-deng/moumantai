@@ -1,0 +1,30 @@
+.track {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Each page leaves 8px of the next page's edge visible — the swipe
+ * affordance. Last page snap-aligns to end so the trailing 8px isn't
+ * empty whitespace on the rightmost screen. */
+.page {
+  flex: 0 0 calc(100% - 8px);
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+}
+
+.page:last-child {
+  scroll-snap-align: end;
+}

@@ -1,0 +1,106 @@
+# Target: ESP32-S3
+CONFIG_IDF_TARGET="esp32s3"
+
+# Flash: 16MB, QIO mode
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_ESPTOOLPY_FLASHMODE_QIO=y
+
+# PSRAM: 8MB Octal, 80MHz
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_OCT=y
+CONFIG_SPIRAM_SPEED_80M=y
+CONFIG_SPIRAM_TRY_ALLOCATE_WIFI_LWIP=y
+# Default 16384 forces every alloc <=16 KB into internal SRAM (~150 KB free
+# pool), starving LVGL widgets / cJSON / nanopb-grown arrays before the
+# 8 MB PSRAM is touched. Lower the threshold so mid-size allocs spill to
+# PSRAM. The 32 KB internal-only RESERVE still keeps DMA-capable headroom.
+CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=4096
+
+# Allow zero-initialized BSS to live in PSRAM. Required for placing LVGL's
+# 128 KB static widget pool (see CONFIG_LV_ATTRIBUTE_LARGE_RAM_ARRAY below)
+# in external RAM — without this flag the linker keeps EXT_RAM_BSS_ATTR
+# arrays in internal .bss anyway.
+CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY=y
+
+# Custom partition table (16MB flash)
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# LVGL — zero Montserrat. Every label in the renderer uses resolve_font()
+# which returns one of the three moumantai_font_{14,20,28} merged fonts
+# (Inter + Noto CJK SC + Noto Symbols 2 + Noto Emoji + Material Symbols
+# Rounded, generated at build time from TTFs in assets/fonts/).
+#
+# LVGL still requires *some* built-in font be picked as the theme
+# default (for widgets that don't have a font set explicitly). We pick
+# UNSCII 8 — the smallest built-in, ~2 KB pixel monospace. Our renderer
+# code always calls resolve_font() / sets fonts explicitly, so this
+# default is effectively unused at runtime.
+CONFIG_LV_COLOR_DEPTH_16=y
+# LVGL auto-enables LV_FONT_MONTSERRAT_14 via `default y if !LV_CONF_MINIMAL`,
+# so we explicitly disable it — our unified moumantai_font_* are the only
+# text fonts the renderer uses.
+# CONFIG_LV_FONT_MONTSERRAT_14 is not set
+CONFIG_LV_FONT_UNSCII_8=y
+CONFIG_LV_FONT_DEFAULT_UNSCII_8=y
+# moumantai_font_* use LVGL RLE compression (lv_font_conv without
+# --no-compress) so the draw pipeline needs the decompressor, otherwise
+# labels render blank. Adds ~3 KB of .text for the inflate path.
+CONFIG_LV_USE_FONT_COMPRESSED=y
+# Skip compiling LVGL's bundled examples/demos. They reference Montserrat
+# sizes we don't enable and add flash we don't use.
+# CONFIG_LV_BUILD_EXAMPLES is not set
+# CONFIG_LV_BUILD_DEMOS is not set
+CONFIG_LV_USE_FLEX=y
+CONFIG_LV_USE_GRID=y
+CONFIG_LV_USE_LOG=y
+CONFIG_LV_LOG_LEVEL_WARN=y
+
+# Pool was 64 KB. Bump to 256 KB. The worst-case face (scoreboard:scoreboard
+# = 64 components) is ~26 KB of base widget structs plus per-style local-style
+# entries (each lv_obj_set_style_* call allocates a _lv_obj_style_t — for a
+# face with ~80 widgets and a few non-shared style sets each, easily another
+# ~30 KB). Plus TLSF fragmentation overhead (~30 % at sustained churn).
+# Plus the per-body widget-map slot we add in Phase 2 (~8 KB).
+#
+# 128 KB had been crashing under heavy use (visit 5+ faces in succession; the
+# previous-body retention bug compounded but even with a single face the
+# margin was uncomfortable). 256 KB gives us comfortable headroom without
+# being wasteful — PSRAM has 5+ MB free.
+#
+# The pool is moved to PSRAM via LV_ATTRIBUTE_LARGE_RAM_ARRAY=EXT_RAM_BSS_ATTR
+# (set in the project root CMakeLists.txt — see comment there for why this
+# isn't a Kconfig option in the LVGL managed component).
+CONFIG_LV_MEM_SIZE_KILOBYTES=256
+
+# Performance
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+
+# Event loop — rendering complex faces on sys_evt task needs more stack
+CONFIG_ESP_SYSTEM_EVENT_TASK_STACK_SIZE=8192
+
+# Main task — boot path runs board → renderer → navigation_init →
+# config_screen_build → make_field × 3 → apply_textfield_style on the
+# main task. The default 3584 was already tight (LVGL's recursive
+# style-cache passes consume non-trivial stack per lv_obj_set_style_*),
+# and tightening visual baselines via shared style helpers nudged it
+# over. 6144 gives comfortable headroom and is still much smaller than
+# the WiFi/event tasks.
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=6144
+
+# WiFi + server URI are no longer Kconfig-configurable — they're stored
+# in NVS and edited via the on-device ConfigScreen. See components/
+# config_store/ and components/navigation/config_screen.c. This avoids
+# baking real credentials into shared binaries.
+
+# Task watchdog: PANIC on timeout instead of just logging. Enabled AFTER
+# Tiers 1/2/4 land — the 30 s vTaskDelay reconnect (replaced by esp_timer),
+# portMAX_DELAY ws close (now bounded to 3 s), and synchronous send_bin on
+# the LVGL task (now async via send queue) would each trip the 5 s WDT and
+# reset the chip spuriously. With those gone, hung-task = real bug = reset
+# is the right contract: "device unresponsive forever" → "device reboots
+# in 5 s and recovers" is a much better failure mode for an IoT panel.
+CONFIG_ESP_TASK_WDT_PANIC=y
+
+# Compiler optimization
+CONFIG_COMPILER_OPTIMIZATION_PERF=y

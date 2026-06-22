@@ -1,0 +1,108 @@
+// Draft-editing messages — coding-agent-driven app/face editing pipeline.
+//
+// A draft is either a shadow copy of a live app (edit draft) or a new app
+// being scaffolded (new-app draft). Dev clients preview; user promotes or
+// discards. See server/src/server/drafts/.
+
+syntax = "proto3";
+
+package moumantai.v1;
+
+option java_package = "com.moumantai.protocol.v1";
+
+// ---------------------------------------------------------------------------
+// Enums (used only here)
+// ---------------------------------------------------------------------------
+
+// Whether a draft edits an existing app or scaffolds a new one.
+enum DraftKind {
+  DRAFT_KIND_UNSPECIFIED = 0;
+  DRAFT_KIND_EDIT = 1;
+  DRAFT_KIND_NEW_APP = 2;
+}
+
+// Lifecycle status carried by `DraftStateChanged`.
+enum DraftStatus {
+  DRAFT_STATUS_UNSPECIFIED = 0;
+  DRAFT_STATUS_CREATED = 1;
+  DRAFT_STATUS_UPDATED = 2;
+  DRAFT_STATUS_PROMOTED = 3;
+  DRAFT_STATUS_DISCARDED = 4;
+  DRAFT_STATUS_FAILED = 5;
+}
+
+// ---------------------------------------------------------------------------
+// Draft descriptor
+// ---------------------------------------------------------------------------
+
+// Full snapshot of a draft's server-side state. Always a complete snapshot —
+// client replaces its `drafts` map entry on receipt.
+message DraftSummary {
+  string draft_id = 1;
+  // For new-app drafts, initially the draft_id; updated to the agent-chosen
+  // manifest.id after the first Reload post-scaffold.
+  string app_id = 2;
+  DraftKind kind = 3;
+  int64 created_at_ms = 4;
+  int32 message_count = 5;
+  // Agent ran all validators and recommends promoting. Cleared on every new
+  // dev-chat message. Hint only — does NOT gate Promote (that's `previewable`).
+  bool ready_for_review = 6;
+  // Agent's one-paragraph summary, rendered in the Ready panel.
+  optional string summary = 7;
+  // True when the draft has a booted, renderable app — this is the Promote
+  // gate. Recomputed from the registry on reconnect (unlike `ready_for_review`
+  // which the agent must re-assert each turn).
+  bool previewable = 8;
+}
+
+// ---------------------------------------------------------------------------
+// Server → client
+// ---------------------------------------------------------------------------
+
+// Server → client draft lifecycle notification. Broadcast to every dev-mode
+// PWA session. ESP32/Wear never receive this.
+message DraftStateChanged {
+  DraftSummary draft = 1;
+  DraftStatus status = 2;
+  // Populated on FAILED status.
+  optional string error_message = 3;
+}
+
+// ACK for client→server draft action requests. Client correlates by draft_id
+// and re-enables the button on receipt. `error` is human-readable when ok=false.
+message DraftActionResult {
+  string draft_id = 1;
+  bool ok = 2;
+  optional string error = 3;
+}
+
+// ---------------------------------------------------------------------------
+// Client → server
+// ---------------------------------------------------------------------------
+
+// Opt this client into / out of previewing a draft.
+message PreviewOptInRequest {
+  string draft_id = 1;
+  bool opt_in = 2;
+}
+
+// Reload preview: run reloadAppModule + broadcast face update to opted-in clients.
+message DraftReloadRequest {
+  string draft_id = 1;
+}
+
+// Promote: valid when DraftSummary.previewable == true.
+message DraftPromoteRequest {
+  string draft_id = 1;
+}
+
+// Discard: terminate the agent turn and clean up the worktree.
+message DraftDiscardRequest {
+  string draft_id = 1;
+}
+
+// Cancel the in-flight edit-agent turn (fires its AbortSignal).
+message DraftTurnCancelRequest {
+  string draft_id = 1;
+}

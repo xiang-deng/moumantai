@@ -1,0 +1,585 @@
+// Moumantai UI component vocabulary. Each component is its own message;
+// `ComponentDef.component` selects the variant via `oneof`.
+//
+// Conventions:
+// - `id` lives on the wrapping `ComponentDef`, not inside variant messages,
+//   so renderers can iterate the flat list without peeking into each case.
+// - Modifier props (padding / width / height / background / visible / weight)
+//   live in `Modifier` at field 200 in every variant — reserved across all
+//   variants so future modifier additions share the same field number.
+// - Container components list child ids in `repeated string children`. `List`
+//   is the exception — it uses `ListChildren` for data-driven binding.
+
+syntax = "proto3";
+
+package moumantai.v1;
+
+import "moumantai/v1/actions.proto";
+import "moumantai/v1/dynamic.proto";
+import "moumantai/v1/enums.proto";
+
+option java_package = "com.moumantai.protocol.v1";
+
+// ---------------------------------------------------------------------------
+// Modifier — shared across every component variant
+// ---------------------------------------------------------------------------
+
+// Common modifier props applied to every component (field 200 in every variant).
+message Modifier {
+  // Padding around the component (single value applied to all four edges, or
+  // per-edge via PaddingEdges).
+  optional Dimension padding = 1;
+  // Explicit width (dp) or auto-sentinel.
+  optional Dimension width = 2;
+  // Explicit height (dp) or auto-sentinel.
+  optional Dimension height = 3;
+  // Background fill — either a literal CSS color / token or a path-resolved
+  // value at render time.
+  optional DynamicString background = 4;
+  // Visibility gate — when present and resolves to false, the component is
+  // skipped at render time.
+  optional DynamicBool visible = 5;
+  // Flex weight inside parent Column / Row (relative ratio).
+  optional double weight = 6;
+}
+
+// Dimension scalar: fixed dp value, sizing keyword, or per-edge padding.
+message Dimension {
+  oneof kind {
+    // Fixed dp value (≥ 0).
+    int32 dp = 1;
+    // Sizing keyword: 'fill', 'wrap', 'grow'. Free-form to allow future
+    // additions without a wire-breaking enum.
+    string keyword = 2;
+    // Per-edge padding (only valid for `padding` slots).
+    PaddingEdges edges = 3;
+  }
+}
+
+// Per-edge padding values (dp).
+message PaddingEdges {
+  optional int32 top = 1;
+  optional int32 bottom = 2;
+  optional int32 start = 3;
+  optional int32 end = 4;
+  // Shorthand: horizontal → start+end; vertical → top+bottom.
+  // Takes precedence over the per-edge fields above when set.
+  optional int32 horizontal = 5;
+  optional int32 vertical = 6;
+}
+
+// ---------------------------------------------------------------------------
+// Top-level component wrapper
+// ---------------------------------------------------------------------------
+
+// Flat component definition. `id` is the renderer's stable handle;
+// the `component` oneof carries the variant-specific props.
+message ComponentDef {
+  // Stable component id (must be unique within a face). The root scaffold
+  // must use id="root".
+  string id = 1;
+
+  // Variant payload. Exactly one variant is set per ComponentDef.
+  oneof component {
+    // atoms
+    TextComponent text = 10;
+    IconComponent icon = 11;
+    ImageComponent image = 12;
+    DividerComponent divider = 13;
+    // layout
+    ColumnComponent column = 20;
+    RowComponent row = 21;
+    CardComponent card = 22;
+    // chrome
+    ScaffoldComponent scaffold = 30;
+    TopBarComponent top_bar = 31;
+    // actions
+    ButtonComponent button = 40;
+    ChipComponent chip = 41;
+    FabComponent fab = 42;
+    // input
+    TextFieldComponent text_field = 50;
+    CheckBoxComponent check_box = 51;
+    SwitchComponent switch_toggle = 52;
+    SliderComponent slider = 53;
+    TabsComponent tabs = 54;
+    SelectComponent select = 55;
+    DateTimeInputComponent date_time_input = 56;
+    // data
+    ListComponent list = 60;
+    ListItemComponent list_item = 61;
+    // feedback
+    ProgressRingComponent progress_ring = 72;
+    ProgressBarComponent progress_bar = 73;
+    ModalComponent modal = 71;
+    // layout (cont.) — z-stack overlay container.
+    BoxComponent box = 23;
+  }
+
+  // 70 = old ProgressComponent (circular/linear variant union) — removed in
+  //      the intent-driven redesign. Replaced by progress_ring (72) +
+  //      progress_bar (73) as separate components.
+  reserved 70;
+  reserved "progress";
+}
+
+// ---------------------------------------------------------------------------
+// Atoms
+// ---------------------------------------------------------------------------
+
+// Display text with typography styling.
+message TextComponent {
+  // Text content.
+  optional DynamicString text = 1;
+  // Material 3 typography role.
+  optional string typography = 2;
+  // CSS-compatible color token or hex value.
+  optional string color = 3;
+  // Font weight bucket.
+  optional string font_weight = 4;
+  // Text alignment.
+  optional string text_align = 5;
+
+  // Modifier (shared shape).
+  optional Modifier modifier = 200;
+}
+
+// Material Symbols icon (or 'fa:<name>' fallback).
+message IconComponent {
+  // Icon name (e.g. "check_circle"); 'fa:' prefix selects FontAwesome Free.
+  optional DynamicString name = 1;
+  // Icon size (dp).
+  optional int32 size = 2;
+  // Color token or hex (may be path-resolved).
+  optional DynamicString color = 3;
+  // Optional click action.
+  optional Action action = 4;
+
+  optional Modifier modifier = 200;
+}
+
+// Image from a URL.
+message ImageComponent {
+  // Image URL (may be path-resolved).
+  optional DynamicString src = 1;
+  // Alt text for accessibility.
+  optional string alt = 2;
+  // Object-fit mode.
+  optional string fit = 3;
+
+  optional Modifier modifier = 200;
+}
+
+// Visual separator line.
+message DividerComponent {
+  // Line thickness (dp).
+  optional int32 thickness = 1;
+  // Color token or hex.
+  optional string color = 2;
+
+  optional Modifier modifier = 200;
+}
+
+// ---------------------------------------------------------------------------
+// Layout
+// ---------------------------------------------------------------------------
+
+// Vertical flex container.
+message ColumnComponent {
+  // Children (component ids in order).
+  repeated string children = 1;
+  // Inter-child spacing (dp).
+  optional int32 spacing = 2;
+  // Main-axis arrangement.
+  optional string vertical_arrangement = 3;
+  // Cross-axis alignment for children.
+  optional string horizontal_alignment = 4;
+
+  optional Modifier modifier = 200;
+}
+
+// Horizontal flex container.
+message RowComponent {
+  // Children (component ids in order).
+  repeated string children = 1;
+  // Inter-child spacing (dp).
+  optional int32 spacing = 2;
+  // Main-axis arrangement.
+  optional string horizontal_arrangement = 3;
+  // Cross-axis alignment for children.
+  optional string vertical_alignment = 4;
+
+  optional Modifier modifier = 200;
+}
+
+// Container that holds child components with visual emphasis.
+//
+// Intent axes:
+//   - `emphasis`: 'standard' (default, filled with surface-container-highest)
+//     or 'elevated' (with shadow, for hero / standout content).
+//   - `tone`: 'default' (neutral surface) or 'accent' / 'warning' / 'error' /
+//     'info' (semantic color-container family).
+//
+// State: when `action` is set the card becomes interactive (state-layer on
+// hover / focus / press); when absent the card is decorative.
+message CardComponent {
+  // Children (component ids in order).
+  repeated string children = 1;
+  // Optional click action.
+  optional Action action = 3;
+  // Visual weight: 'standard' (default) | 'elevated'.
+  optional string emphasis = 4;
+  // Semantic color role: 'default' (neutral) | 'accent' | 'warning' | 'error' | 'info'.
+  optional string tone = 5;
+
+  optional Modifier modifier = 200;
+
+  // 2 = old `variant` string (filled/outlined/elevated/card_pill/pill_live) —
+  //     removed; replaced by emphasis + tone intent axes.
+  reserved 2;
+  reserved "variant";
+}
+
+// Z-stack overlay container. Children are layered along the z-axis, each
+// anchored to a position within the box's bounds. Canonical use: badge-on-card.
+//
+// Convention: index 0 is the BACKGROUND (defines intrinsic size, may fill
+// width); subsequent children are OVERLAYS painted on top. Renderers flag
+// overlay children so width-filling primitives (Card) skip fillMaxWidth.
+// See `with_box.json` for the canonical fixture.
+//
+// Alignment vocabulary is free-form string (design-system catalog
+// `alignments.values`): topStart, topCenter, topEnd, centerStart, center,
+// centerEnd, bottomStart, bottomCenter, bottomEnd. Default `topStart`.
+message BoxComponent {
+  // Children (component ids in order; later entries paint on top).
+  repeated string children = 1;
+  // Default alignment applied to every child unless overridden by
+  // `child_alignment[i]` at the same index.
+  optional string content_alignment = 2;
+  // Per-child alignment override, parallel to `children` by index. Empty
+  // / missing entries fall back to `content_alignment`. Indices outside
+  // the array also fall back.
+  repeated string child_alignment = 3;
+
+  optional Modifier modifier = 200;
+}
+
+// ---------------------------------------------------------------------------
+// Chrome
+// ---------------------------------------------------------------------------
+
+// Top-level screen container with top bar, body, and FAB slots.
+// Exactly one Scaffold per face with id="root" — the implicit render entry point.
+// `body_kind` is LIST (scrollable, default) or CANVAS (bounded, no scroll).
+message ScaffoldComponent {
+  // Component id of the TopBar (or other chrome) rendered above the body.
+  optional string top_bar = 1;
+  // Component id of the main body content.
+  optional string body = 2;
+  // Component id of the floating-action button.
+  optional string fab = 3;
+  // Body layout kind — LIST (default, scrolling) or CANVAS (glance frame).
+  optional BodyKind body_kind = 4;
+
+  optional Modifier modifier = 200;
+}
+
+// App bar with title and navigation / action affordances.
+message TopBarComponent {
+  // Title text (may be path-resolved).
+  optional DynamicString title = 1;
+  // Optional navigation icon action (typically a back / hamburger button).
+  optional Action navigation_action = 2;
+  // Trailing action component ids (typically a row of icon buttons).
+  repeated string actions = 3;
+
+  optional Modifier modifier = 200;
+}
+
+// ---------------------------------------------------------------------------
+// Actions
+// ---------------------------------------------------------------------------
+
+// Clickable button.
+//
+// Intent axes:
+//   - `emphasis`: 'primary' (filled primary CTA, one per face) |
+//     'standard' (default, tonal) | 'quiet' (text only).
+//   - `tone`: 'default' | 'accent' | 'warning' | 'error' | 'info'.
+//
+// FAB is NOT a button variant — use FabComponent for floating action buttons.
+message ButtonComponent {
+  // Button label (may be path-resolved).
+  optional DynamicString text = 1;
+  // Leading icon name (Material Symbols, or 'fa:<name>').
+  optional DynamicString icon = 3;
+  // Disabled gate.
+  optional DynamicBool enabled = 4;
+  // Click action.
+  optional Action action = 5;
+  // Visual weight: 'primary' | 'standard' (default) | 'quiet'.
+  optional string emphasis = 6;
+  // Semantic color role: 'default' (primary family) | 'accent' | 'warning' |
+  // 'error' | 'info'.
+  optional string tone = 7;
+
+  optional Modifier modifier = 200;
+
+  // 2 = old `variant` string (filled/tonal/outlined/text/fab) — removed;
+  //     replaced by emphasis + tone, with `fab` split out to FabComponent.
+  reserved 2;
+  reserved "variant";
+}
+
+// Floating action button — corner-anchored, distinct size/motion from inline Button.
+message FabComponent {
+  // Icon name (Material Symbols, or 'fa:<name>').
+  optional DynamicString icon = 1;
+  // Optional label — present → extended FAB; absent → icon-only compact FAB.
+  optional DynamicString label = 2;
+  // Size token: 'small' | 'regular' (default) | 'extended'.
+  optional string size = 3;
+  // Click action.
+  optional Action action = 4;
+
+  optional Modifier modifier = 200;
+}
+
+// Compact selectable element. Behavior is data-driven:
+//   - `selected` bound → filter chip (secondary-container fill when selected).
+//   - `action` only (no `selected`) → assist chip (neutral outlined).
+//
+// `tone`: 'default' | 'accent' | 'warning' | 'error'.
+message ChipComponent {
+  // Chip label (may be path-resolved).
+  optional DynamicString label = 1;
+  // Optional leading icon.
+  optional DynamicString icon = 2;
+  // Selected state — presence implies filter-chip behavior.
+  optional DynamicBool selected = 3;
+  // Click action.
+  optional Action action = 5;
+  // Semantic color role: 'default' (neutral) | 'accent' | 'warning' | 'error'.
+  optional string tone = 6;
+
+  optional Modifier modifier = 200;
+
+  // 4 = old `variant` string (assist/filter) — removed; assist-vs-filter
+  //     behavior is now derived from `selected` presence.
+  reserved 4;
+  reserved "variant";
+}
+
+// ---------------------------------------------------------------------------
+// Input
+// ---------------------------------------------------------------------------
+
+// Text input field.
+message TextFieldComponent {
+  // Current value (path-resolved binding).
+  optional DynamicString value = 1;
+  // Floating label.
+  optional string label = 2;
+  // Placeholder shown when empty.
+  optional string placeholder = 3;
+  // Soft-keyboard hint.
+  optional string keyboard_type = 4;
+  // Multi-line text input. When true, the renderer presents a multi-line
+  // textarea-style field (typically with a larger min-height).
+  optional bool multiline = 5;
+
+  optional Modifier modifier = 200;
+}
+
+// Boolean checkbox toggle.
+message CheckBoxComponent {
+  // Trailing label (may be path-resolved).
+  optional DynamicString label = 1;
+  // Current checked state.
+  optional DynamicBool checked = 2;
+  // Change action.
+  optional Action action = 3;
+
+  optional Modifier modifier = 200;
+}
+
+// On / off toggle switch.
+message SwitchComponent {
+  // Optional leading label.
+  optional DynamicString label = 1;
+  // Current checked state.
+  optional DynamicBool checked = 2;
+  // Change action.
+  optional Action action = 3;
+
+  optional Modifier modifier = 200;
+}
+
+// Numeric range slider.
+message SliderComponent {
+  // Current value.
+  optional DynamicDouble value = 1;
+  // Minimum allowed value.
+  optional double min = 2;
+  // Maximum allowed value.
+  optional double max = 3;
+  // Step size (defaults to platform-native granularity when unset).
+  optional double step = 4;
+  // Slider label.
+  optional string label = 5;
+  // Change action.
+  optional Action action = 6;
+
+  optional Modifier modifier = 200;
+}
+
+// Tabbed content switcher. `tab_labels[i]` is the label for `tab_content[i]`.
+message TabsComponent {
+  // Visible labels per tab.
+  repeated string tab_labels = 1;
+  // Component id rendered when the matching tab is selected.
+  repeated string tab_content = 2;
+  // Currently-selected tab index (path-resolved).
+  optional DynamicInt32 selected = 3;
+  // Selection-change action.
+  optional Action action = 4;
+
+  optional Modifier modifier = 200;
+}
+
+// One option in a Select component.
+message SelectOption {
+  string label = 1;
+  string value = 2;
+}
+
+// Pick one option from a list.
+message SelectComponent {
+  // Currently-selected value (path-resolved).
+  optional DynamicString value = 1;
+  // Floating label.
+  optional string label = 2;
+  // Either an inline list of options or a path to one in the data model.
+  optional SelectOptions options = 3;
+  // Selection-change action.
+  optional Action action = 4;
+
+  optional Modifier modifier = 200;
+}
+
+// Inline option list or a path-resolved one from the data model.
+message SelectOptions {
+  oneof value {
+    SelectOptionList literal = 1;
+    string path = 2;
+  }
+}
+
+message SelectOptionList {
+  repeated SelectOption options = 1;
+}
+
+// Date / time / datetime picker.
+message DateTimeInputComponent {
+  // Current ISO-8601 value (path-resolved).
+  optional DynamicString value = 1;
+  // Floating label.
+  optional string label = 2;
+  // Picker mode (date, time, or datetime).
+  optional string mode = 3;
+  // Change action.
+  optional Action action = 4;
+
+  optional Modifier modifier = 200;
+}
+
+// ---------------------------------------------------------------------------
+// Data
+// ---------------------------------------------------------------------------
+
+// Binds a data-model array path to a per-item template component.
+message ListChildren {
+  // JSON-Pointer path into the face data model resolving to an array.
+  string path = 1;
+  // Component id of the per-item template; the renderer instantiates one
+  // copy per array element with the element scoped under the template's
+  // `pathRef('$.field')` lookups.
+  string component_id = 2;
+}
+
+// Scrollable data-driven list. Each row clones the template against one array element.
+message ListComponent {
+  // Children binding.
+  optional ListChildren children = 1;
+
+  optional Modifier modifier = 200;
+}
+
+// One row in a List.
+message ListItemComponent {
+  // Primary headline (may be path-resolved).
+  optional DynamicString headline = 1;
+  // Supporting line below the headline.
+  optional DynamicString supporting = 2;
+  // Leading icon name.
+  optional DynamicString leading_icon = 3;
+  // Component id rendered as the trailing slot (e.g. a Switch or a Button).
+  optional string trailing_content = 4;
+  // Tap action.
+  optional Action action = 5;
+
+  optional Modifier modifier = 200;
+}
+
+// ---------------------------------------------------------------------------
+// Feedback
+// ---------------------------------------------------------------------------
+
+// Circular progress indicator (SVG ring) with centered label / sublabel.
+// Intrinsic-sized. Use ProgressBarComponent for fill-width linear bars.
+message ProgressRingComponent {
+  // Current progress (typically 0..max).
+  optional DynamicDouble value = 1;
+  // Maximum value (default: 100).
+  optional double max = 2;
+  // Optional centered label.
+  optional DynamicString label = 3;
+  // Optional smaller sublabel below the main label.
+  optional DynamicString sublabel = 4;
+  // Semantic color role: 'primary' (default) | 'secondary' | 'tertiary' |
+  // 'error' | 'warning' | 'info'.
+  optional string color = 5;
+  // Indicator diameter (dp). Default 64.
+  optional int32 size = 6;
+
+  optional Modifier modifier = 200;
+}
+
+// Linear progress bar (fill-width, rounded ends).
+// Use ProgressRingComponent for circular indicators.
+message ProgressBarComponent {
+  // Current progress (typically 0..max).
+  optional DynamicDouble value = 1;
+  // Maximum value (default: 100).
+  optional double max = 2;
+  // Optional leading label.
+  optional DynamicString label = 3;
+  // Semantic color role: 'primary' (default) | 'secondary' | 'tertiary' |
+  // 'error' | 'warning' | 'info'.
+  optional string color = 4;
+
+  optional Modifier modifier = 200;
+}
+
+// Overlay dialog.
+message ModalComponent {
+  // Children (component ids in order).
+  repeated string children = 1;
+  // Open state (path-resolved).
+  optional DynamicBool open = 2;
+  // Dismiss / confirm action.
+  optional Action action = 3;
+
+  optional Modifier modifier = 200;
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material 3 dark theme seed colors -->
+    <color name="md_theme_dark_primary">#FF80CBC4</color>
+    <color name="md_theme_dark_onPrimary">#FF003731</color>
+    <color name="md_theme_dark_primaryContainer">#FF004F46</color>
+    <color name="md_theme_dark_onPrimaryContainer">#FFA7F3EC</color>
+    <color name="md_theme_dark_background">#FF0F1513</color>
+    <color name="md_theme_dark_onBackground">#FFDFE4E1</color>
+    <color name="md_theme_dark_surface">#FF0F1513</color>
+    <color name="md_theme_dark_onSurface">#FFDFE4E1</color>
+    <color name="md_theme_dark_error">#FFFFB4AB</color>
+    <color name="md_theme_dark_onError">#FF690005</color>
+</resources>

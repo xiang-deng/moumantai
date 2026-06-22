@@ -1,0 +1,271 @@
+# Moumantai Design System — Single Source of Truth
+#
+# Catalog of intent axes + treatment tables for every styled component.
+# The wire carries semantic intent fields (spec.md rule 7); this catalog
+# is the renderer-side dictionary that maps intent to (kind, accent), which
+# each platform translates to its native style.
+#
+# Schema
+# ------
+# components.<Name>.intents.defaults    — default intents when wire field is unset
+# components.<Name>.treatments[].match  — partial intent dict; first match wins
+# components.<Name>.treatments[].kind   — semantic primitive (filled / outlined /
+#                                         elevated / text / floating / progress_*)
+# components.<Name>.treatments[].accent — token namespace (neutral / primary /
+#                                         secondary / tertiary / error / warning)
+# components.<Name>.selected_treatment  — Chip-only; layered when `selected:` is bound
+#
+# Authors write intent fields via server/src/server/protocol/components/.
+# The treatments table is framework-internal.
+#
+# alignments      — Box layout alignment vocabulary
+# Image.fit_modes — canonical fit names; fit_aliases maps synonyms
+# layout          — normative size-resolution rules (SSOT for "what does
+#                   omit-width mean"); renderers call the generated
+#                   resolveChildWidth/resolveChildHeight.
+
+components:
+  Button:
+    intents:
+      defaults: { emphasis: standard, tone: default }
+      emphasis_values: [primary, standard, quiet]
+      tone_values: [default, accent, warning, error, info]
+    # First match wins. Treatment = (kind, accent) pair that each renderer
+    # translates to its native style.
+    treatments:
+      - match: { emphasis: primary, tone: error }
+        kind: filled_container
+        accent: error
+      - match: { emphasis: primary, tone: warning }
+        kind: filled_container
+        accent: warning
+      - match: { emphasis: primary }
+        kind: filled_container
+        accent: primary
+      - match: { emphasis: quiet, tone: error }
+        kind: transparent
+        accent: error
+      - match: { emphasis: quiet }
+        kind: transparent
+        accent: primary
+      - match: { tone: error }
+        kind: outlined_container
+        accent: error
+      - match: { tone: warning }
+        kind: filled_container
+        accent: warning
+      - match: { tone: accent }
+        kind: filled_container
+        accent: secondary
+      - match: { tone: info }
+        kind: filled_container
+        accent: tertiary
+      - match: {} # default: standard + default → tonal (filled secondary)
+        kind: filled_container
+        accent: secondary
+
+  Card:
+    intents:
+      defaults: { emphasis: standard, tone: default }
+      emphasis_values: [standard, elevated]
+      tone_values: [default, accent, warning, error, info]
+    treatments:
+      - match: { tone: error }
+        kind: filled_container
+        accent: error
+      - match: { tone: warning }
+        kind: filled_container
+        accent: warning
+      - match: { tone: accent }
+        kind: filled_container
+        accent: secondary
+      - match: { tone: info }
+        kind: filled_container
+        accent: tertiary
+      - match: { emphasis: elevated }
+        kind: elevated_container
+        accent: neutral
+      - match: {} # default: standard + default → filled neutral
+        kind: filled_container
+        accent: neutral
+
+  Chip:
+    intents:
+      defaults: { tone: default }
+      tone_values: [default, accent, warning, error]
+    treatments:
+      - match: { tone: error }
+        kind: outlined_container
+        accent: error
+      - match: { tone: warning }
+        kind: outlined_container
+        accent: warning
+      - match: { tone: accent }
+        kind: outlined_container
+        accent: secondary
+      - match: {} # default → outlined neutral (assist chip look)
+        kind: outlined_container
+        accent: neutral
+    # Overlay applied when `selected:` is bound and resolves true.
+    # Filter-chip M3 spec: secondary-container fill replaces the outlined base.
+    selected_treatment:
+      kind: filled_container
+      accent: secondary
+
+  Fab:
+    intents:
+      defaults: { size: regular }
+      size_values: [small, regular, extended]
+    # FAB always uses primary-container family; sizes affect dimensions, not
+    # color paint. Single treatment per FAB instance.
+    treatments:
+      - match: {}
+        kind: floating_action
+        accent: primary
+
+  ProgressRing:
+    # No intent axes — `color` field on the proto carries semantic role.
+    # Constant treatment; renderers honor `color` for tint.
+    treatments:
+      - match: {}
+        kind: progress_ring
+        accent: primary
+
+  ProgressBar:
+    treatments:
+      - match: {}
+        kind: progress_bar
+        accent: primary
+
+  Image:
+    default_fit: contain
+    fit_modes:
+      - contain
+      - crop
+      - fill
+      - fillHeight
+      - fillWidth
+      - none
+    fit_aliases:
+      cover: crop
+      fillBounds: fill
+      fit: contain
+      inside: contain
+
+alignments:
+  default: topStart
+  values:
+    - bottomCenter
+    - bottomEnd
+    - bottomStart
+    - center
+    - centerEnd
+    - centerStart
+    - topCenter
+    - topEnd
+    - topStart
+
+arrangements:
+  default: start
+  values: [start, center, end, spaceBetween, spaceAround, spaceEvenly]
+
+# ---------------------------------------------------------------------------
+# Layout-default resolution rules (normative; see spec.md rule 10).
+#
+# Algorithm (deterministic pure function):
+#   1. own_modifier.width set → dp(n)→FIXED; 'fill'→FILL; 'wrap'→WRAP;
+#      'grow'→GROW (flex weight; off-axis / non-flex parent falls back to FILL).
+#   2. parent_kind has a containers entry:
+#      - Plain container   → child_default_width
+#      - Box slot_policies → slot_index==0 ? 'background' : 'overlay'
+#      - Scaffold          → lookup by slot_name
+#      Map cross_axis_fill→FILL, cross_axis_wrap→WRAP, none→WRAP.
+#   3. Else (root or unknown parent): fall back to components[child_kind].width:
+#      parent→FILL, wrap→WRAP, fixed→FIXED.
+#
+# Valid own-keyword values: fill | wrap | grow | <dp integer>
+#
+# Every ComponentDef.component variant MUST have a `components` entry.
+# Codegen fails closed if missing (scripts/build-design-system.py).
+# ---------------------------------------------------------------------------
+
+layout:
+  size_keywords: [fill, wrap, grow]
+
+  containers:
+    Box:
+      slot_policies:
+        background: { width: cross_axis_fill, height: cross_axis_wrap }
+        overlay: { width: none, height: none }
+    Card:
+      child_default_width: cross_axis_fill
+      child_default_height: cross_axis_wrap
+    Column:
+      child_default_width: cross_axis_fill
+      child_default_height: cross_axis_wrap
+    List:
+      child_default_width: cross_axis_fill
+      child_default_height: cross_axis_wrap
+      # Gap between list children, keyed by child component variant.
+      # Per-size-class behavior falls out of the tokens resolution automatically.
+      # `spacing.none` = sentinel for literal 0.
+      child_gaps:
+        Card: spacing.s
+        ListItem: spacing.none
+        default: spacing.s
+    Modal:
+      child_default_width: cross_axis_fill
+      child_default_height: cross_axis_wrap
+    Row:
+      child_default_width: cross_axis_wrap
+      child_default_height: cross_axis_wrap
+    Scaffold:
+      slot_policies:
+        body: { width: cross_axis_fill, height: cross_axis_fill }
+        fab: { width: none, height: none }
+        top_bar: { width: cross_axis_fill, height: none }
+    Tabs:
+      child_default_width: cross_axis_fill
+      child_default_height: cross_axis_wrap
+    TopBar:
+      child_default_width: cross_axis_wrap
+      child_default_height: cross_axis_wrap
+
+  components:
+    Box: { width: parent, height: parent }
+    Button: { width: wrap, height: wrap }
+    Card: { width: parent, height: wrap }
+    CheckBox: { width: parent, height: wrap }
+    Chip: { width: wrap, height: wrap }
+    Column: { width: parent, height: parent }
+    DateTimeInput: { width: parent, height: wrap }
+    Divider: { width: parent, height: fixed }
+    Fab: { width: wrap, height: wrap }
+    Icon: { width: fixed, height: fixed }
+    Image: { width: wrap, height: wrap }
+    List: { width: parent, height: parent }
+    ListItem: { width: parent, height: wrap }
+    Modal: { width: parent, height: parent }
+    # Compact authoring hint: warn at face load if `size` exceeds max_circular_size_dp
+    # (chin clearance on watch/IoT). See server/src/server/agent/define-face.ts.
+    ProgressRing:
+      width: wrap
+      height: wrap
+      compact:
+        max_circular_size_dp: 100
+    ProgressBar: { width: parent, height: wrap }
+    Row:
+      width: parent
+      height: wrap
+      # Compact authoring hint: >2 selected-chip children overflow on round watches.
+      compact:
+        orientation_hint: collapse_to_column
+        max_selected_chips: 2
+    Scaffold: { width: parent, height: parent }
+    Select: { width: parent, height: wrap }
+    Slider: { width: parent, height: wrap }
+    Switch: { width: parent, height: wrap }
+    Tabs: { width: parent, height: wrap }
+    Text: { width: wrap, height: wrap }
+    TextField: { width: parent, height: wrap }
+    TopBar: { width: parent, height: wrap }

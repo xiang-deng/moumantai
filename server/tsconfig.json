@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2020"],
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "moumantai": ["./src/server/framework/moumantai.ts"],
+      "moumantai/ui": ["./src/server/protocol/components/index.ts"],
+      "@moumantai/protocol": ["../shared/protocol/src/index.ts"],
+      "@moumantai/protocol/design-system": [
+        "../shared/protocol/design-system/generated/design-system.ts"
+      ],
+      "drizzle-orm": ["./node_modules/drizzle-orm"],
+      "drizzle-orm/*": ["./node_modules/drizzle-orm/*"]
+    }
+  },
+  "include": ["src"]
+}

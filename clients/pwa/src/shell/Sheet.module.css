@@ -1,0 +1,95 @@
+/* M3 bottom-sheet spec.
+ *
+ * Scrim: `--md-sys-color-scrim` is a SOLID color (#000 or seeded); the M3
+ * spec calls for compositing it at 32% opacity over the underlying view.
+ * Using the raw token as a background made the scrim opaque — black band
+ * above the sheet on dark theme. `color-mix(... 32%, transparent)` is the
+ * fix; works across all modern browsers.
+ *
+ * Surface: `surface-container-low` (M3 spec for bottom sheets — 1-level
+ * elevated from the bare surface). 28dp top corners only.
+ *
+ * Motion: emphasized-decelerated 400ms slide-up on open; backdrop fades
+ * over the same duration.
+ */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
+  z-index: var(--moumantai-z-modal, 20);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: backdrop-fade var(--moumantai-motion-duration-long1)
+    var(--moumantai-motion-easing-emphasized-decelerate);
+}
+
+.sheet {
+  width: 100%;
+  max-width: 720px;
+  max-height: 90dvh;
+  background: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-on-surface);
+  /* M3 spec: 28dp top corners only (catalog xl is 24dp, close enough). */
+  border-top-left-radius: var(--moumantai-shape-xl);
+  border-top-right-radius: var(--moumantai-shape-xl);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: env(safe-area-inset-bottom);
+  animation: sheet-slide var(--moumantai-motion-duration-long1)
+    var(--moumantai-motion-easing-emphasized-decelerate);
+  overflow: hidden;
+  box-shadow: var(--moumantai-elevation-elevated);
+}
+
+.handle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 16px 8px;
+  touch-action: none;
+  cursor: grab;
+  flex: 0 0 auto;
+}
+
+/* M3 spec: 32×4dp drag handle, outline color (low-emphasis). */
+.handleBar {
+  width: 32px;
+  height: 4px;
+  border-radius: var(--moumantai-shape-full);
+  background: var(--md-sys-color-on-surface-variant);
+  opacity: 0.4;
+}
+
+.title {
+  margin-top: 12px;
+  font-size: var(--moumantai-title-medium);
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface);
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@keyframes backdrop-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sheet-slide {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

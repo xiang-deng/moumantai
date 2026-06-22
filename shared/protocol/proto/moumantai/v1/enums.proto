@@ -1,0 +1,169 @@
+// Wire-level enumerations shared by every message type.
+//
+// Naming: SCREAMING_SNAKE_CASE prefixed with the enum name. The 0 value is
+// always the explicit "unspecified" sentinel (proto3 default for unset enums).
+
+syntax = "proto3";
+
+package moumantai.v1;
+
+option java_package = "com.moumantai.protocol.v1";
+
+// ---------------------------------------------------------------------------
+// Device descriptors
+// ---------------------------------------------------------------------------
+
+// Device form-factor classes.
+enum DeviceClass {
+  DEVICE_CLASS_UNSPECIFIED = 0;
+  DEVICE_CLASS_PHONE = 1;
+  DEVICE_CLASS_WATCH = 2;
+  DEVICE_CLASS_GLASS = 3;
+  DEVICE_CLASS_IOT_SMALL = 4;
+  DEVICE_CLASS_HMI_PANEL = 5;
+}
+
+// Screen-shape descriptor sent inside `DeviceProfile`.
+enum DeviceShape {
+  DEVICE_SHAPE_UNSPECIFIED = 0;
+  DEVICE_SHAPE_RECT = 1;
+  DEVICE_SHAPE_ROUND = 2;
+}
+
+// Server-derived size class from `DeviceProfile.width` (compact ≤240dp, expanded >240dp).
+enum SizeClass {
+  SIZE_CLASS_UNSPECIFIED = 0;
+  SIZE_CLASS_COMPACT = 1;
+  SIZE_CLASS_EXPANDED = 2;
+}
+
+// ---------------------------------------------------------------------------
+// App / face variant (live vs. draft preview)
+// ---------------------------------------------------------------------------
+
+// Live vs. in-progress draft variant. Draft frames are sent only to opted-in
+// dev clients. Unset == LIVE.
+enum AppVariant {
+  APP_VARIANT_UNSPECIFIED = 0;
+  APP_VARIANT_LIVE = 1;
+  APP_VARIANT_DRAFT = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Chat + voice + lifecycle
+// ---------------------------------------------------------------------------
+
+// User-message lifecycle status. Only meaningful on user rows; assistant /
+// system rows are always TURN_STATUS_COMPLETED.
+enum TurnStatus {
+  TURN_STATUS_UNSPECIFIED = 0;
+  TURN_STATUS_PENDING = 1;
+  TURN_STATUS_RUNNING = 2;
+  TURN_STATUS_COMPLETED = 3;
+  TURN_STATUS_FAILED = 4;
+  TURN_STATUS_TIMED_OUT = 5;
+  TURN_STATUS_ABORTED = 6;
+}
+
+// Speaker role on a chat row.
+enum ChatRole {
+  CHAT_ROLE_UNSPECIFIED = 0;
+  CHAT_ROLE_USER = 1;
+  CHAT_ROLE_ASSISTANT = 2;
+  CHAT_ROLE_SYSTEM = 3;
+}
+
+// Voice-pipeline state machine. Carried in `VoiceState`.
+enum VoiceStateValue {
+  VOICE_STATE_VALUE_UNSPECIFIED = 0;
+  VOICE_STATE_VALUE_IDLE = 1;
+  VOICE_STATE_VALUE_LISTENING = 2;
+  VOICE_STATE_VALUE_THINKING = 3;
+  VOICE_STATE_VALUE_SPEAKING = 4;
+}
+
+// Audio frame encoding. Spans server→client TTS and client→server voice
+// upload paths.
+enum AudioFormat {
+  AUDIO_FORMAT_UNSPECIFIED = 0;
+  AUDIO_FORMAT_PCM16 = 1;
+}
+
+// ---------------------------------------------------------------------------
+// Errors
+// ---------------------------------------------------------------------------
+
+// Defined protocol error codes. Every code has a matching close code in `CloseCode`.
+enum ProtocolErrorCode {
+  PROTOCOL_ERROR_CODE_UNSPECIFIED = 0;
+  // Client sent a non-hello frame for a sessionId the server doesn't know.
+  PROTOCOL_ERROR_CODE_UNKNOWN_SESSION = 1;
+  // A second socket tried to bind the same sessionId.
+  PROTOCOL_ERROR_CODE_SESSION_IN_USE = 2;
+  // Inbound audio exceeded per-session size or rate limits.
+  PROTOCOL_ERROR_CODE_AUDIO_OVERFLOW = 3;
+  // Too many user turns / binary frames per unit time.
+  PROTOCOL_ERROR_CODE_RATE_LIMITED = 4;
+  // Server is currently processing the maximum queued turns for this session.
+  PROTOCOL_ERROR_CODE_SESSION_BUSY = 5;
+  // Frame size / component count exceeded server caps.
+  PROTOCOL_ERROR_CODE_FRAME_TOO_LARGE = 6;
+  // `originConversationId` no longer matches the server's active conversation.
+  PROTOCOL_ERROR_CODE_STALE_CONVERSATION = 7;
+}
+
+// WebSocket close codes (4000–4999 private range). Field numbers match the
+// numeric close-code values so an int wire round-trip is faithful.
+enum CloseCode {
+  CLOSE_CODE_UNSPECIFIED = 0;
+  CLOSE_CODE_HANDSHAKE_TIMEOUT = 4001;
+  CLOSE_CODE_INVALID_HELLO = 4002;
+  CLOSE_CODE_UNKNOWN_SESSION = 4003;
+  CLOSE_CODE_SESSION_IN_USE = 4004;
+  CLOSE_CODE_AUDIO_OVERFLOW = 4005;
+  CLOSE_CODE_RATE_LIMITED = 4006;
+  CLOSE_CODE_FRAME_TOO_LARGE = 4007;
+  // Device is not paired (allowlisted) on a server with pairing enabled. The
+  // client should surface a "pairing required" state (it can derive a short
+  // code from its own deviceId) and keep retrying — approval flips a server
+  // flag and the next reconnect succeeds. Not fatal: do not stop reconnecting.
+  CLOSE_CODE_PAIRING_REQUIRED = 4008;
+}
+
+// ---------------------------------------------------------------------------
+// Component layout (structural, framework-controlled — not LLM-authored)
+// ---------------------------------------------------------------------------
+
+// Body-slot layout for Scaffold. Framework-controlled (closed set).
+// LIST: body is the platform-native lazy/scrollable container; each top-level
+// child is one item. CANVAS: bounded centered Column, no scroll (glance faces).
+// Default LIST.
+enum BodyKind {
+  BODY_KIND_UNSPECIFIED = 0;
+  BODY_KIND_LIST = 1;
+  BODY_KIND_CANVAS = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Binary frames
+// ---------------------------------------------------------------------------
+
+// One-byte type prefix for binary WebSocket frames.
+enum BinaryFrameType {
+  BINARY_FRAME_TYPE_UNSPECIFIED = 0;
+  BINARY_FRAME_TYPE_AUDIO = 1;
+  BINARY_FRAME_TYPE_IMAGE = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Component styling values are FREE-FORM STRINGS, not enums
+// ---------------------------------------------------------------------------
+//
+// Typography, TextAlign, FontWeight, ImageFit, FlexArrangement, alignments,
+// KeyboardType, picker mode, ProgressVariant, and similar styling props are
+// plain `string` fields in components.proto. Closed enums would block
+// LLM-authored plugin apps from using bespoke values without a schema bump.
+// The protocol enums above (DeviceClass, TurnStatus, AudioFormat, etc.) are
+// closed because each value requires coordinated renderer support.
+//
+// See `shared/protocol/CLAUDE.md` "no enum for LLM-authored values" rule.

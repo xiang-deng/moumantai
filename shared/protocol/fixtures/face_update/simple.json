@@ -1,0 +1,26 @@
+{
+  "scope": "home",
+  "appId": "home",
+  "faceId": "main",
+  "components": [
+    {
+      "id": "root",
+      "scaffold": { "body": "content" }
+    },
+    {
+      "id": "content",
+      "column": {
+        "children": ["welcome"],
+        "spacing": 8
+      }
+    },
+    {
+      "id": "welcome",
+      "text": {
+        "text": { "literal": "Welcome to Moumantai" },
+        "typography": "headlineMedium"
+      }
+    }
+  ],
+  "data": {}
+}

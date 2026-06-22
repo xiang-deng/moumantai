@@ -1,0 +1,44 @@
+# EditorConfig — https://editorconfig.org
+# Polyglot repo: TS/JS (2-space), Kotlin/C/Python (4-space). One baseline + per-language overrides.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Web + config: 2-space
+[*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,css,html,yml,yaml,proto,toml}]
+indent_size = 2
+
+# Python (PEP 8)
+[*.py]
+indent_size = 4
+
+# Kotlin (official style). ktlint (via Spotless) reads these keys.
+[*.{kt,kts}]
+indent_size = 4
+# We adopt ktlint for *formatting*, not naming/structure opinions. Disable the
+# non-formatting rules that conflict with intentional idioms:
+#   function-naming        — Jetpack Compose @Composable functions are PascalCase
+#   backing-property-naming — intentional backing properties in ViewModels
+#   no-consecutive-comments — adjacent KDoc blocks are used deliberately
+#   no-empty-file          — doc-anchor files (package + KDoc, no decls) are intentional
+ktlint_standard_function-naming = disabled
+ktlint_standard_backing-property-naming = disabled
+ktlint_standard_no-consecutive-comments = disabled
+ktlint_standard_no-empty-file = disabled
+
+# C / C++ (ESP-IDF)
+[*.{c,h,cpp,hpp}]
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+
+# Markdown: trailing whitespace is significant (hard line breaks)
+[*.md]
+trim_trailing_whitespace = false

@@ -1,0 +1,171 @@
+# Emoji codepoints for the Unicode fallback font.
+#
+# Monochrome rendering via Noto Emoji (not color — LVGL's 4bpp format
+# cannot store color emoji practically). Format matches cjk_sc_codepoints.txt.
+#
+# Most emoji live in the Supplementary Multilingual Plane (SMP, 0x1F000+).
+# LVGL v9 UTF-8 decoder handles 4-byte UTF-8 so these work fine; the
+# generator emits them via lv_font_conv's --symbols.
+
+# --- BMP "emoji-like" dingbats (already covered by symbols font, keep for clarity) ---
+# (Intentionally empty — BMP symbols are covered by SYMBOL_RANGES in the script.)
+
+# --- Emoticons (smileys) ---
+0x1F600  # 😀 grinning face
+0x1F601  # 😁 grinning face with smiling eyes
+0x1F602  # 😂 face with tears of joy
+0x1F603  # 😃 smiling face with open mouth
+0x1F604  # 😄 smiling face with open mouth & smiling eyes
+0x1F605  # 😅 smiling face with open mouth & cold sweat
+0x1F606  # 😆 smiling face with open mouth & tightly-closed eyes
+0x1F609  # 😉 winking face
+0x1F60A  # 😊 smiling face with smiling eyes
+0x1F60D  # 😍 smiling face with heart-eyes
+0x1F610  # 😐 neutral face
+0x1F614  # 😔 pensive face
+0x1F615  # 😕 confused face
+0x1F618  # 😘 face blowing a kiss
+0x1F61B  # 😛 face with stuck-out tongue
+0x1F61C  # 😜 face with stuck-out tongue & winking eye
+0x1F622  # 😢 crying face
+0x1F623  # 😣 persevering face
+0x1F624  # 😤 face with steam from nose
+0x1F625  # 😥 disappointed but relieved face
+0x1F629  # 😩 weary face
+0x1F62D  # 😭 loudly crying face
+0x1F631  # 😱 face screaming in fear
+0x1F633  # 😳 flushed face
+0x1F634  # 😴 sleeping face
+0x1F636  # 😶 face without mouth
+0x1F642  # 🙂 slightly smiling face
+0x1F643  # 🙃 upside-down face
+0x1F644  # 🙄 face with rolling eyes
+0x1F910  # 🤐 zipper-mouth face
+0x1F914  # 🤔 thinking face
+0x1F917  # 🤗 hugging face
+0x1F923  # 🤣 rolling on the floor laughing
+0x1F924  # 🤤 drooling face
+0x1F925  # 🤥 lying face
+0x1F92A  # 🤪 zany face
+0x1F92D  # 🤭 face with hand over mouth
+0x1F970  # 🥰 smiling face with hearts
+0x1F973  # 🥳 partying face
+0x1F975  # 🥵 hot face
+0x1F976  # 🥶 cold face
+0x1F97A  # 🥺 pleading face
+
+# --- Hand signs / gestures ---
+0x1F44B  # 👋 waving hand
+0x1F44D  # 👍 thumbs up
+0x1F44E  # 👎 thumbs down
+0x1F44F  # 👏 clapping hands
+0x1F446  # 👆 backhand index pointing up
+0x1F447  # 👇 backhand index pointing down
+0x1F448  # 👈 backhand index pointing left
+0x1F449  # 👉 backhand index pointing right
+0x1F64C  # 🙌 raising hands
+0x1F64F  # 🙏 folded hands
+0x1F91D  # 🤝 handshake
+0x1F91E  # 🤞 crossed fingers
+0x270A   # ✊ raised fist
+0x270B   # ✋ raised hand
+0x270C   # ✌ victory hand
+0x1F44A  # 👊 oncoming fist
+
+# --- Hearts & symbols ---
+0x2764   # ❤ red heart
+0x1F494  # 💔 broken heart
+0x1F495  # 💕 two hearts
+0x1F496  # 💖 sparkling heart
+0x1F497  # 💗 growing heart
+0x1F49A  # 💚 green heart
+0x1F49B  # 💛 yellow heart
+0x1F49C  # 💜 purple heart
+0x1F5A4  # 🖤 black heart
+0x2B50   # ⭐ star
+0x2728   # ✨ sparkles
+0x1F525  # 🔥 fire
+0x1F4AF  # 💯 hundred points
+0x1F4A9  # 💩 pile of poo
+0x1F4A5  # 💥 collision
+0x1F4A4  # 💤 zzz
+0x1F4AC  # 💬 speech balloon
+
+# --- Everyday objects / UI ---
+0x2705   # ✅ check mark
+0x274C   # ❌ cross mark
+0x2757   # ❗ red exclamation
+0x2753   # ❓ red question mark
+0x26A0   # ⚠ warning
+0x1F4A1  # 💡 light bulb
+0x1F4CC  # 📌 pushpin
+0x1F4DD  # 📝 memo
+0x1F4CA  # 📊 bar chart
+0x1F4C8  # 📈 chart increasing
+0x1F4C9  # 📉 chart decreasing
+0x1F512  # 🔒 locked
+0x1F513  # 🔓 unlocked
+0x1F514  # 🔔 bell
+0x1F515  # 🔕 bell with slash
+0x1F50D  # 🔍 magnifying glass
+0x1F4BB  # 💻 laptop
+0x1F4F1  # 📱 mobile phone
+0x1F4DE  # 📞 telephone receiver
+0x1F4E7  # 📧 email
+0x1F4E9  # 📩 envelope with arrow
+0x1F4EC  # 📬 open mailbox with raised flag
+0x1F3E0  # 🏠 house
+0x1F697  # 🚗 car
+0x1F681  # 🚁 helicopter
+0x1F680  # 🚀 rocket
+0x2708   # ✈ airplane
+0x1F6AB  # 🚫 prohibited
+0x1F6A8  # 🚨 police car light
+
+# --- Food & plants (common in chat / tracker apps) ---
+0x1F34E  # 🍎 red apple
+0x1F34C  # 🍌 banana
+0x1F349  # 🍉 watermelon
+0x1F363  # 🍣 sushi
+0x1F354  # 🍔 hamburger
+0x1F355  # 🍕 pizza
+0x1F356  # 🍖 meat on bone
+0x1F35C  # 🍜 steaming bowl
+0x1F366  # 🍦 soft ice cream
+0x1F370  # 🍰 shortcake
+0x1F382  # 🎂 birthday cake
+0x1F377  # 🍷 wine glass
+0x1F37A  # 🍺 beer mug
+0x2615   # ☕ hot beverage
+0x1F33B  # 🌻 sunflower
+0x1F332  # 🌲 evergreen tree
+
+# --- Weather ---
+0x2600   # ☀ sun
+0x2601   # ☁ cloud
+0x2614   # ☔ umbrella with rain drops
+0x26C4   # ⛄ snowman without snow
+0x1F324  # 🌤 sun behind small cloud
+0x1F327  # 🌧 cloud with rain
+0x1F329  # 🌩 cloud with lightning
+0x1F308  # 🌈 rainbow
+0x2744   # ❄ snowflake
+
+# --- Time & misc ---
+0x1F550  # 🕐 one o'clock
+0x23F0   # ⏰ alarm clock
+0x231A   # ⌚ watch
+0x1F389  # 🎉 party popper
+0x1F38A  # 🎊 confetti ball
+0x1F381  # 🎁 wrapped gift
+0x1F3C6  # 🏆 trophy
+0x1F3AF  # 🎯 bullseye
+0x1F3B5  # 🎵 musical note
+0x1F3B6  # 🎶 musical notes
+
+# --- Arrows / UI (SMP region) ---
+0x1F519  # 🔙 BACK arrow
+0x1F51A  # 🔚 END arrow
+0x1F51B  # 🔛 ON! arrow
+0x1F51C  # 🔜 SOON arrow
+0x1F51D  # 🔝 TOP arrow

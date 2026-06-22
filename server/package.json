@@ -1,0 +1,39 @@
+{
+  "name": "@moumantai/server",
+  "description": "Moumantai server — runs plugin apps, coordinates agent backends, and speaks the Moumantai wire protocol to every client.",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --clear-screen=false --exclude \"../.moumantai/**\" --exclude \"**/.moumantai/**\" --exclude \"../apps/**\" src/server/main.ts",
+    "start": "tsx src/server/main.ts",
+    "cli": "tsx src/server/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/check-test-boundaries.mjs && tsc --noEmit && vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "uv run python tests/e2e/run_all.py",
+    "db:generate": "tsx ../.claude/skills/build-moumantai-app/scripts/db-generate.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.2.97",
+    "@earendil-works/pi-coding-agent": "^0.75.4",
+    "@moumantai/protocol": "*",
+    "typebox": "^1.1.38",
+    "better-sqlite3": "^11.0.0",
+    "drizzle-orm": "^0.45.2",
+    "openai": "^6.34.0",
+    "ws": "^8.20.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/ws": "^8.18.1",
+    "@vitest/coverage-v8": "^4.0.18",
+    "drizzle-kit": "^0.31.10",
+    "tsx": "^4.21.0",
+    "typescript": "^5.6.0",
+    "vitest": "^4.0.18"
+  }
+}

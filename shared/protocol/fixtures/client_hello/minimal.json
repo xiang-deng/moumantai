@@ -1,0 +1,9 @@
+{
+  "deviceId": "00000000-0000-4000-8000-000000000001",
+  "deviceClass": "DEVICE_CLASS_PHONE",
+  "deviceProfile": {
+    "width": 390,
+    "height": 844,
+    "shape": "DEVICE_SHAPE_RECT"
+  }
+}

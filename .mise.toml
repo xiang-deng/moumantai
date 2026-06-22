@@ -1,0 +1,24 @@
+# Pinned toolchain. SSOT for tool versions across Windows / macOS / Linux.
+#
+# Setup (first time):
+#   1. Install mise: https://mise.jdx.dev/getting-started.html
+#   2. mise activate <bash|zsh|pwsh>   # one-time, add to your rc file
+#   3. mise install                    # provisions everything below
+#
+# Per-machine paths (ANDROID_HOME, IDF_PATH, PORT) live in .mise.local.toml
+# (gitignored). Copy .mise.local.toml.example to start.
+
+[tools]
+node   = "22.19"
+python = "3.12"
+uv     = "latest"       # Python dep manager — `uv sync` reads pyproject.toml + uv.lock
+java   = "temurin-17"   # AGP 8.7.3 requires JDK 17
+task   = "3.50"
+# Protobuf toolchain. We use the npm-distributed buf binary rather than a
+# mise plugin so the version pin lives next to the protoc-gen-es plugin
+# pin in `shared/protocol/package.json` (single source of truth for the
+# protocol-build dependency cluster). The mise entry below is kept as a
+# convenience for users who prefer `buf` on PATH; the repo Taskfile always
+# routes through `node ./node_modules/@bufbuild/buf/bin/buf` for
+# Windows-friendly invocation.
+"npm:@bufbuild/buf" = "1.68.4"   # npm backend, not aqua/GitHub — see note above

@@ -1,0 +1,58 @@
+// Action dispatch primitives — every interactive component carries an `Action`
+// describing which tool to invoke when activated. User clicks and LLM tool
+// calls run through the same server-side handler.
+//
+// `Action.args` may contain `{path: "..."}` placeholders resolved client-side
+// against face data, item scope (`$.field`), or `/$form/...` before sending.
+
+syntax = "proto3";
+
+package moumantai.v1;
+
+import "google/protobuf/struct.proto";
+
+option java_package = "com.moumantai.protocol.v1";
+
+// ---------------------------------------------------------------------------
+// Component-attached action
+// ---------------------------------------------------------------------------
+
+// Action carried inside every interactive component. The dispatcher resolves
+// `{path: "..."}` placeholders in `args` and sends an `InvokeToolMsg`.
+// `tool` is either an app-defined tool name or the framework-synthesized
+// `view_<faceId>` for view steering.
+message Action {
+  // Tool name. App-defined tools must match a `defineTool` registration; the
+  // synthesized `view_<faceId>` is reserved for framework navigation.
+  string tool = 1;
+  // Tool arguments. May contain `{path: "..."}` placeholders that the client
+  // resolves against face data, item scope, or `/$form/...` before sending.
+  google.protobuf.Struct args = 2;
+  // Author-supplied prompt sent verbatim to the user when the tool reports
+  // missing-required args. Skips the LLM escalation turn. Absent → normal
+  // LLM-driven escalation.
+  optional string escalation_prompt = 3;
+}
+
+// ---------------------------------------------------------------------------
+// Client → server invoke envelope
+// ---------------------------------------------------------------------------
+
+// Sent by the client when a user action fires. The server deduplicates on
+// `(conversation_id, client_request_id)`, executes the tool via the same
+// `executeTool` path the agent loop uses, and broadcasts a face refresh.
+message InvokeToolMsg {
+  // Tool to invoke. Must exist in the active app's tool registry, or be the
+  // synthesized `view_<faceId>` for the active app.
+  string tool_name = 1;
+  // Tool arguments (already resolved client-side).
+  google.protobuf.Struct args = 2;
+  // Face id the action originated from (used for transcript context and
+  // scoping the synthesized view-tool to the right face).
+  string source_face_id = 3;
+  // Client-generated UUID for idempotent dedup. Result cached for 24h.
+  string client_request_id = 4;
+  // Forwarded from `Action.escalation_prompt`. When set, server posts this
+  // string instead of running the LLM escalation turn.
+  optional string escalation_prompt = 5;
+}

@@ -1,0 +1,26 @@
+Moumantai
+Copyright (c) 2026 Moumantai contributors
+
+The Moumantai source is MIT-licensed (see LICENSE). This product also bundles
+third-party components that retain their original licenses. Full license text
+for each lives in its own directory under the path noted below.
+
+ESP32 firmware components — these are NOT bundled in this repository. The
+ESP-IDF Component Manager downloads them at build time (`idf.py build`) into
+clients/esp32/managed_components/ (a gitignored directory). After building, the
+full license text for each lives in its own directory under the path noted below:
+
+- LVGL (lvgl__lvgl) — MIT License.
+  https://github.com/lvgl/lvgl
+  LVGL itself bundles 25+ libraries (BSD / MIT / Zlib / FreeType / Apache-2.0);
+  see managed_components/lvgl__lvgl/COPYRIGHTS.md for the full inventory.
+
+- esp_lvgl_port, esp_lcd_touch, esp_lcd_touch_gt911, esp_websocket_client
+  (espressif__*) — Apache License 2.0.
+  https://github.com/espressif/idf-extra-components
+
+- esp_lcd_ili9488 (atanisoft__esp_lcd_ili9488) — MIT License.
+  https://github.com/atanisoft/esp_lcd_ili9488
+
+- nanopb (nikas-belogolov__nanopb) — zlib License.
+  https://github.com/nanopb/nanopb

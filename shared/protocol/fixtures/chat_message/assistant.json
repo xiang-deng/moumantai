@@ -1,0 +1,9 @@
+{
+  "id": "1e0c84c9-bdaa-4b66-a64a-94a7e9f8a002",
+  "scope": "home",
+  "conversationId": "8e3ec5b7-d7c0-49d2-9c7e-2b3a1ad9be01",
+  "role": "CHAT_ROLE_ASSISTANT",
+  "text": "Your total spend for April is $1,247.83 across 23 transactions.",
+  "timestamp": "2026-04-25T12:34:58Z",
+  "audioUrl": "https://cdn.moumantai/tts/1e0c84c9.mp3"
+}

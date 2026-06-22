@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Material 3 dark theme for splash/activity (before Compose loads) -->
+    <style name="Theme.Moumantai" parent="android:Theme.Material.NoActionBar">
+        <item name="android:colorBackground">#FF0F1513</item>
+        <item name="android:statusBarColor">#FF0F1513</item>
+        <item name="android:navigationBarColor">#FF0F1513</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+</resources>

@@ -1,0 +1,46 @@
+{
+  "scope": "app:spend-tracker",
+  "appId": "spend-tracker",
+  "faceId": "summary",
+  "components": [
+    { "id": "root", "scaffold": { "topBar": "bar", "body": "content" } },
+    { "id": "bar", "topBar": { "title": { "literal": "Spend Tracker" } } },
+    {
+      "id": "content",
+      "column": { "children": ["total_label", "total_value", "recent_list"], "spacing": 8 }
+    },
+    {
+      "id": "total_label",
+      "text": {
+        "text": { "literal": "Total Spent" },
+        "typography": "labelMedium"
+      }
+    },
+    {
+      "id": "total_value",
+      "text": {
+        "text": { "path": "/summary/total" },
+        "typography": "displayLarge"
+      }
+    },
+    {
+      "id": "recent_list",
+      "list": { "children": { "path": "/recent_expenses", "componentId": "recent_item" } }
+    },
+    {
+      "id": "recent_item",
+      "listItem": {
+        "headline": { "path": "$.merchant" },
+        "supporting": { "path": "$.formatted_amount" }
+      }
+    }
+  ],
+  "data": {
+    "summary": { "total": "$1,247.83" },
+    "recent_expenses": [
+      { "merchant": "Trader Joe's", "formatted_amount": "$48.10" },
+      { "merchant": "Shell", "formatted_amount": "$72.55" },
+      { "merchant": "Netflix", "formatted_amount": "$15.49" }
+    ]
+  }
+}

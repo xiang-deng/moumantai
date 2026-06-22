@@ -1,0 +1,118 @@
+{
+  "$comment": "Fixture-driven conformance contract for the unified action surface ($form ↔ tool-param). Source-of-truth lives in shared/protocol/FORM_SCOPE.md; this file encodes the matrices in machine-checkable form. Per-client harnesses in each clients/<id>/tests + the server integration test all consume this fixture.",
+  "version": 1,
+  "widget_form_types": {
+    "$comment": "What each input renderer writes to $form. A new client must produce these exact runtime types per widget; drift here breaks the contract.",
+    "text_field": "string",
+    "check_box": "boolean",
+    "switch_toggle": "boolean",
+    "slider": "number",
+    "tabs": "number",
+    "select": "string",
+    "date_time_input": "string"
+  },
+  "client_resolver": {
+    "$comment": "When a client renderer dispatches an Action with pathRef('/$form/<id>'), the resolver substitutes the value verbatim. NO client-side coercion. The wire frame InvokeToolMsg.args carries the runtime type that the renderer produced.",
+    "cases": [
+      {
+        "name": "text_field passes string through verbatim",
+        "form_state": { "kcal_input": "2000" },
+        "action_args": { "kcal": { "path": "/$form/kcal_input" } },
+        "expected_wire_args": { "kcal": "2000" },
+        "expected_wire_arg_types": { "kcal": "string" }
+      },
+      {
+        "name": "switch_toggle passes boolean through verbatim",
+        "form_state": { "notify": true },
+        "action_args": { "notify": { "path": "/$form/notify" } },
+        "expected_wire_args": { "notify": true },
+        "expected_wire_arg_types": { "notify": "boolean" }
+      },
+      {
+        "name": "slider passes number through verbatim",
+        "form_state": { "intensity": 0.75 },
+        "action_args": { "level": { "path": "/$form/intensity" } },
+        "expected_wire_args": { "level": 0.75 },
+        "expected_wire_arg_types": { "level": "number" }
+      }
+    ]
+  },
+  "server_coercion": {
+    "$comment": "Server-side validateAndCoerceUIArgs converts widget-natural types to declared tool-param types. Drift here breaks UI invocations regardless of which client sent them.",
+    "cases": [
+      {
+        "name": "text_field string coerces to number param",
+        "wire_args": { "kcal": "2000" },
+        "tool_params": { "kcal": { "type": "number", "required": true } },
+        "expected_coerced_args": { "kcal": 2000 },
+        "expected_coerced_types": { "kcal": "number" }
+      },
+      {
+        "name": "text_field string '0' coerces to number 0 (not falsy-skipped)",
+        "wire_args": { "kcal": "0" },
+        "tool_params": { "kcal": { "type": "number" } },
+        "expected_coerced_args": { "kcal": 0 },
+        "expected_coerced_types": { "kcal": "number" }
+      },
+      {
+        "name": "text_field 'true'/'false' coerce to boolean param",
+        "wire_args": { "active": "true", "muted": "false" },
+        "tool_params": {
+          "active": { "type": "boolean" },
+          "muted": { "type": "boolean" }
+        },
+        "expected_coerced_args": { "active": true, "muted": false },
+        "expected_coerced_types": { "active": "boolean", "muted": "boolean" }
+      },
+      {
+        "name": "switch_toggle native boolean passes through",
+        "wire_args": { "notify": true },
+        "tool_params": { "notify": { "type": "boolean" } },
+        "expected_coerced_args": { "notify": true },
+        "expected_coerced_types": { "notify": "boolean" }
+      },
+      {
+        "name": "slider native number passes through",
+        "wire_args": { "level": 0.75 },
+        "tool_params": { "level": { "type": "number" } },
+        "expected_coerced_args": { "level": 0.75 },
+        "expected_coerced_types": { "level": "number" }
+      }
+    ]
+  },
+  "server_rejection": {
+    "$comment": "Inputs that must fail validation. The error code is tool_validation; the originating client must surface this as a transient notice (FORM_SCOPE.md §error-UX).",
+    "cases": [
+      {
+        "name": "non-numeric string rejected for number param",
+        "wire_args": { "kcal": "abc" },
+        "tool_params": { "kcal": { "type": "number" } },
+        "expected_error_pattern": "must be a number"
+      },
+      {
+        "name": "empty string rejected for number param (blank is not zero)",
+        "wire_args": { "kcal": "" },
+        "tool_params": { "kcal": { "type": "number" } },
+        "expected_error_pattern": "must be a number"
+      },
+      {
+        "name": "whitespace-only string rejected for number param",
+        "wire_args": { "kcal": "   " },
+        "tool_params": { "kcal": { "type": "number" } },
+        "expected_error_pattern": "must be a number"
+      },
+      {
+        "name": "unrecognized boolean string rejected (only true/false map)",
+        "wire_args": { "active": "yes" },
+        "tool_params": { "active": { "type": "boolean" } },
+        "expected_error_pattern": "must be a boolean"
+      },
+      {
+        "name": "missing required param",
+        "wire_args": {},
+        "tool_params": { "kcal": { "type": "number", "required": true } },
+        "expected_error_pattern": "Missing required parameter"
+      }
+    ]
+  }
+}

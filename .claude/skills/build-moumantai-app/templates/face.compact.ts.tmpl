@@ -1,0 +1,51 @@
+import { defineFace } from 'moumantai'
+import { scaffold, column } from 'moumantai/ui'
+// Patterns (from 'moumantai/ui') — import the ones this face needs:
+//   hero(boxId, child)              — centered single-child Box for a glance
+//   kpi(id, value, label, options?) — vertical value+label tile
+//   emptyState(id, message, opts?)  — uniform "nothing here" surface
+//   actionRow(id, primary, sec?)    — bottom action row (FAB primary)
+// import { hero } from 'moumantai/ui'
+import { resolve } from './__FACE_ID__.resolve.js'
+import { __FACE_ID_CAMEL__Body } from './__FACE_ID__.parts.js'
+
+/**
+ * Compact variant: clients at ≤240dp (currently Wear).
+ *
+ * Glance-first IA: ≤3 visible items above the fold; user reads in 1-2s.
+ * `body_kind` is the `BodyKind` ENUM (NOT a string): import `BodyKind` from
+ * 'moumantai/ui' and pass `body_kind: BodyKind.CANVAS` for a fixed glance frame
+ * (hero + headline); omit it for the default `BodyKind.LIST` (scrolling list).
+ *
+ * The framework owns body scrolling — DON'T write `column(scroll: true)` on
+ * the face body. The renderer wraps body in its native lazy container on
+ * compact (TransformingLazyColumn on Wear, scrollable container on phone /
+ * web / ESP32).
+ *
+ * To make this face steerable by the agent, declare `params` +
+ * `viewToolDescription`. See faces.md#parameterized-faces.
+ */
+export default defineFace({
+  id: '__FACE_ID__',
+  label: '__FACE_LABEL__',
+  kind: 'compact',
+  position: 0,
+  // Uncomment to parameterize:
+  // params: {
+  //   month: { type: 'string', description: 'Month YYYY-MM. Defaults to current.' },
+  // },
+  // viewToolDescription:
+  //   'Show the __FACE_LABEL__ view. Pass `month` (YYYY-MM) to view a specific month, omit to use the default.',
+  resolve,
+  components: [
+    // body_kind defaults to BodyKind.LIST; for a glance face import BodyKind
+    // from 'moumantai/ui' and pass `body_kind: BodyKind.CANVAS` (enum, not a string).
+    scaffold('root', { body: 'content' }),
+    column('content', [
+      // TODO: list the child-component ids that form this face's body.
+      // Example: 'total_label', 'total_value', 'recent_list'
+      'placeholder',
+    ], { spacing: 8 }),
+    ...__FACE_ID_CAMEL__Body(),
+  ],
+})

@@ -1,0 +1,44 @@
+import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
+// import { desc, sum, count } from 'drizzle-orm'
+// import { __TABLE__ } from '../schema.js'
+
+/**
+ * Mirror the face's `params` shape here for typed access in resolve().
+ */
+export type __FACE_ID_CAMEL__Params = {
+  // month?: string   // example: 'YYYY-MM'
+}
+
+/**
+ * Pure data producer for the __FACE_ID__ face.
+ * Shape MUST match the resolver-output contract declared in design.md.
+ * The integration test asserts this shape literally.
+ *
+ * For parameterized faces, fill defaults via `params.x ?? fallback()`.
+ */
+export function resolve({
+  db,
+  params,
+}: {
+  db: BetterSQLite3Database
+  params: __FACE_ID_CAMEL__Params
+}): Record<string, unknown> {
+  // Example (diet-tracker summary, with optional month filter):
+  // const month = params.month ?? currentMonth()
+  // const agg = db.select({ total: sum(meals.calories), count: count() })
+  //   .from(meals)
+  //   .where(and(gte(meals.eaten_at, `${month}-01`), lt(meals.eaten_at, nextMonthStart(month))))
+  //   .get()
+  // return {
+  //   summary: {
+  //     total_calories: Number(agg?.total ?? 0),
+  //     meal_count: agg?.count ?? 0,
+  //     month,
+  //   },
+  // }
+
+  return {
+    summary: { todo: true },
+    items: [],
+  }
+}

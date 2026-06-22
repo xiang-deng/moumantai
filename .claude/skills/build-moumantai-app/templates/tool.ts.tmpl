@@ -1,0 +1,24 @@
+import { defineTool } from 'moumantai'
+// import { eq, desc, sum, count } from 'drizzle-orm'
+// import { __TABLE__ } from '../schema.js'
+
+export default defineTool({
+  name: '__TOOL_NAME__',            // snake_case, verb-first (e.g. add_meal)
+  description: '__TOOL_DESCRIPTION__',
+  parameters: {
+    // ONLY 'string' | 'number' | 'boolean' allowed.
+    // For structured inputs, use a JSON string and JSON.parse inside execute.
+    // Example:
+    // name:      { type: 'string', required: true, description: 'Meal name' },
+    // calories:  { type: 'number', required: true },
+    // meal_type: { type: 'string', required: true, description: "'breakfast'|'lunch'|'dinner'|'snack'" },
+  },
+  execute: async ({ params, db }) => {
+    // Every params read needs an `as` cast.
+    // const name = params.name as string
+    // const calories = params.calories as number
+    // const rows = db.insert(__TABLE__).values({ ... }).returning().all()
+    // return { result: { success: true, id: rows[0]!.id } }
+    return { result: { todo: '__TOOL_NAME__' } }
+  },
+})

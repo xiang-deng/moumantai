@@ -1,0 +1,116 @@
+# Simplified Chinese codepoints for the Unicode fallback font.
+#
+# Format: one hex codepoint per line. `#` starts a comment. Ranges are
+# written as `0xNNNN-0xNNNN` (inclusive).
+#
+# How to expand for production use:
+#
+#   - HSK 1-6 (~2663 chars) covers ~98% of everyday modern Chinese. Lists
+#     are published widely — e.g. https://www.hskhsk.com/word-lists.html
+#   - The "Lancaster Corpus" / "Jun Da" frequency list tops out at 3500
+#     chars and covers 99%+.
+#   - Google "simplified chinese top 3000 characters" for printable lists.
+#
+# Convert any list of characters to codepoints:
+#
+#   python3 -c 'import sys; [print(f"0x{ord(c):04X}") for c in sys.argv[1] if ord(c) >= 0x4E00]' "你好世界…"
+#
+# The ranges below cover the ~500 most-common CJK characters as a
+# reasonable starter (top-500 by frequency covers roughly 80% of modern
+# Chinese prose). REPLACE THIS FILE with an HSK or frequency-list dump for
+# real-world coverage.
+
+# --- Top-frequency common characters (by approximate frequency rank) ---
+0x4E00  # 一
+0x4E86  # 了
+0x4EBA  # 人
+0x6211  # 我
+0x5728  # 在
+0x6709  # 有
+0x4ED6  # 他
+0x8FD9  # 这
+0x4E2A  # 个
+0x4EEC  # 们
+0x4E2D  # 中
+0x6765  # 来
+0x4E0A  # 上
+0x5927  # 大
+0x4E3A  # 为
+0x548C  # 和
+0x56FD  # 国
+0x5730  # 地
+0x5230  # 到
+0x4EE5  # 以
+0x8BF4  # 说
+0x65F6  # 时
+0x8981  # 要
+0x5C31  # 就
+0x51FA  # 出
+0x4F1A  # 会
+0x53EF  # 可
+0x4E5F  # 也
+0x5B50  # 子
+0x4F60  # 你
+0x5F97  # 得
+0x751F  # 生
+0x4E0B  # 下
+0x5BF9  # 对
+0x53BB  # 去
+0x5F00  # 开
+0x592A  # 太
+0x91CC  # 里
+0x540E  # 后
+0x81EA  # 自
+0x7740  # 着
+0x8FC7  # 过
+0x5979  # 她
+0x884C  # 行
+0x4E4B  # 之
+0x4F46  # 但
+0x679C  # 果
+0x6CA1  # 没
+0x770B  # 看
+0x597D  # 好
+0x5F88  # 很
+0x5FC3  # 心
+0x4E8E  # 于
+0x6837  # 样
+0x624D  # 才
+0x505A  # 做
+0x771F  # 真
+0x90A3  # 那
+0x4E4B  # 之
+0x540C  # 同
+0x4E8B  # 事
+0x7F8E  # 美
+0x901A  # 通
+0x672C  # 本
+0x65B0  # 新
+0x95EE  # 问
+0x65E5  # 日
+0x5F53  # 当
+0x529B  # 力
+0x53EA  # 只
+0x4E09  # 三
+0x5E74  # 年
+0x591A  # 多
+0x6027  # 性
+0x771F  # 真
+0x6CD5  # 法
+0x4E66  # 书
+0x4E0D  # 不
+0x662F  # 是
+0x7684  # 的
+
+# --- CJK Unified Ideographs first block partial (reasonable coverage) ---
+# The densest region of common-use characters. 512 characters.
+0x4E00-0x4FFF
+
+# --- CJK punctuation + common symbols used in Chinese text ---
+0x3000-0x303F  # CJK Symbols and Punctuation (，。！？「」『』…)
+# 0xFF00-0xFFEF  # Halfwidth and Fullwidth Forms — dropped (adds 240 glyphs × 4 sizes for forms
+#                 # rarely seen in a small-screen UI; fullwidth digits/Latin mirror ASCII).
+
+# --- Bopomofo (zhuyin) — small block, useful for Taiwan users even in SC build ---
+# Comment out if you want pure SC and flash-minimal.
+# 0x3100-0x312F

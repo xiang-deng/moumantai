@@ -1,0 +1,22 @@
+# Per-machine paths. Copy to .mise.local.toml (gitignored) and edit.
+# mise auto-merges .mise.toml + .mise.local.toml; values here override the base.
+
+[env]
+# Android SDK install dir (Studio / sdkmanager). Examples:
+#   Windows: "C:/Software/Android/SDK"
+#   macOS:   "~/Library/Android/sdk"
+#   Linux:   "~/Android/Sdk"
+ANDROID_HOME = ""
+
+# ESP-IDF install dir. Used by clients/esp32/tools/run_idf.py and ESP-IDF's
+# own activation scripts. Examples:
+#   Windows: "C:/esp/esp-idf"
+#   macOS:   "~/esp/esp-idf"
+#   Linux:   "~/esp/esp-idf"
+IDF_PATH = ""
+
+# Default serial port for `task esp32:flash`. Examples:
+#   Windows: "COM3"
+#   macOS:   "/dev/cu.usbserial-XXXX"
+#   Linux:   "/dev/ttyUSB0"
+PORT = ""

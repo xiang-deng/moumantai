@@ -1,0 +1,104 @@
+// Connection-lifecycle messages: hello / hello-ok / error / reset.
+
+syntax = "proto3";
+
+package moumantai.v1;
+
+import "moumantai/v1/chat.proto";
+import "moumantai/v1/enums.proto";
+
+option java_package = "com.moumantai.protocol.v1";
+
+// ---------------------------------------------------------------------------
+// Device profile
+// ---------------------------------------------------------------------------
+
+// Physical screen characteristics declared at handshake time.
+message DeviceProfile {
+  // Screen width in dp.
+  int32 width = 1;
+  // Screen height in dp.
+  int32 height = 2;
+  // Screen shape descriptor.
+  DeviceShape shape = 3;
+}
+
+// ---------------------------------------------------------------------------
+// Handshake
+// ---------------------------------------------------------------------------
+
+// First message sent by the client immediately after the WebSocket open.
+message ClientHello {
+  // Form-factor declaration; routes to per-class size + capability defaults.
+  DeviceClass device_class = 1;
+  // Physical screen characteristics.
+  DeviceProfile device_profile = 2;
+  // Navigation intent — server honors these on (re)connect to restore
+  // pre-disconnect UI state.
+  optional string current_app_id = 3;
+  optional string current_face_id = 4;
+  // Stable device identifier — UUIDv4, generated on first launch and
+  // persisted in secure storage (Android EncryptedSharedPreferences / ESP32 NVS).
+  // Server upserts a `devices` row on each connect.
+  optional string device_id = 5;
+}
+
+// Server response confirming the session.
+message ServerHello {
+  // Routing handle for this WebSocket; refreshed on every connect.
+  string session_id = 1;
+  // Server-side dev-mode gate (MOUMANTAI_DEV_MODE). The PWA shows dev/draft
+  // surfaces only when true AND the client opts in via localStorage.
+  optional bool dev_mode_enabled = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Errors
+// ---------------------------------------------------------------------------
+
+// Structured error delivered on the control channel.
+message ErrorMessage {
+  // Defined error code; clients switch on this and drive recovery.
+  ProtocolErrorCode code = 1;
+  // Human-readable detail for logs / UI surfacing. Never secrets.
+  string message = 2;
+  // If set, client should retry after this many milliseconds (used with
+  // `rate_limited`, `session_busy`).
+  optional int32 retry_after_ms = 3;
+  // The `client_msg_id` of the offending input, if applicable. Populated on
+  // `stale_conversation` so the client can correlate the error back to a
+  // specific offline-queue item.
+  optional string client_msg_id = 4;
+}
+
+// ---------------------------------------------------------------------------
+// Conversation reset
+// ---------------------------------------------------------------------------
+
+// Client requests a non-destructive reset of a scope's conversation.
+// Server aborts any in-flight turn, archives the current conversation, and
+// starts a fresh one. Response: `ChatWindowMsg` with empty entries.
+message ResetConversationMsg {
+  // 'home' or 'app:<app_id>'.
+  string scope = 1;
+  // Thread to reset. Unset == CHAT_KIND_CHAT. CHAT_KIND_DEV resets the dev
+  // conversation only — draft/worktree is preserved. Required because a
+  // new-app draft uses scope 'home', identical to home chat.
+  optional ChatKind kind = 2;
+}
+
+// Server → client notice broadcast to every socket viewing the scope before
+// its conversation is reset. Clients suppress when
+// `requester_session_id == transport.current_session_id` (only other devices
+// need to surface a banner). Emitted before the empty `chatWindow` so the UI
+// can overlay a banner on the about-to-vanish history.
+message ResetNoticeMsg {
+  // 'home' or 'app:<app_id>' — scope whose conversation was reset.
+  string scope = 1;
+  // UUID of the NEW conversation that will follow in `chatWindow`.
+  string conversation_id = 2;
+  // WebSocket session_id of the device that issued the reset.
+  string requester_session_id = 3;
+  // ISO-8601 timestamp of reset.
+  string timestamp = 4;
+}

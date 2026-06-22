@@ -1,0 +1,44 @@
+// Dynamic value wrappers — component props that can be either a literal
+// or a JSON-Pointer reference into the face data model.
+// The `oneof value` discriminator tells the renderer which branch to follow.
+
+syntax = "proto3";
+
+package moumantai.v1;
+
+option java_package = "com.moumantai.protocol.v1";
+
+// Either a literal string or a JSON-Pointer path into the face data model.
+message DynamicString {
+  oneof value {
+    // Inline literal value (used as-is by the renderer).
+    string literal = 1;
+    // JSON-Pointer reference (e.g. "/summary/total"). Renderer resolves
+    // against the surrounding face data model.
+    string path = 2;
+  }
+}
+
+// Either a literal bool or a JSON-Pointer path resolved at render time.
+message DynamicBool {
+  oneof value {
+    bool literal = 1;
+    string path = 2;
+  }
+}
+
+// Either a literal int32 or a JSON-Pointer path (e.g. Tabs.selected).
+message DynamicInt32 {
+  oneof value {
+    int32 literal = 1;
+    string path = 2;
+  }
+}
+
+// Either a literal double or a JSON-Pointer path.
+message DynamicDouble {
+  oneof value {
+    double literal = 1;
+    string path = 2;
+  }
+}

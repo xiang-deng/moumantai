@@ -1,0 +1,281 @@
+// Chat + voice + audio + image input messages.
+
+syntax = "proto3";
+
+package moumantai.v1;
+
+import "google/protobuf/struct.proto";
+import "moumantai/v1/components.proto";
+import "moumantai/v1/enums.proto";
+
+option java_package = "com.moumantai.protocol.v1";
+
+// ---------------------------------------------------------------------------
+// Chat thread kind (regular vs. dev/draft-editing)
+// ---------------------------------------------------------------------------
+
+// Distinguishes the regular user chat from the developer (draft-editing) chat
+// thread. A scope can have one active conversation per kind. Unset == CHAT so
+// existing clients/rows behave unchanged.
+enum ChatKind {
+  CHAT_KIND_UNSPECIFIED = 0;
+  CHAT_KIND_CHAT = 1;
+  CHAT_KIND_DEV = 2;
+}
+
+// Status of a single item in the edit-agent's TodoWrite list. Used only by
+// ChatTodosUpdate.
+enum TodoStatus {
+  TODO_STATUS_UNSPECIFIED = 0;
+  TODO_STATUS_PENDING = 1;
+  TODO_STATUS_IN_PROGRESS = 2;
+  TODO_STATUS_COMPLETED = 3;
+}
+
+// ---------------------------------------------------------------------------
+// Server → client chat
+// ---------------------------------------------------------------------------
+
+// A chat message delivered from the server (user echo or assistant reply).
+message ChatMessage {
+  // Unique message UUID.
+  string id = 1;
+  // Conversation scope: 'home' or 'app:<app_id>'.
+  string scope = 2;
+  // Conversation UUID. Clients comparing across frames detect resets via a
+  // changed conversation_id.
+  string conversation_id = 3;
+  // Speaker role.
+  ChatRole role = 4;
+  // Message body.
+  string text = 5;
+  // ISO-8601 timestamp.
+  string timestamp = 6;
+  // Client-generated UUID echoed back for optimistic-UI reconciliation. Set
+  // on frames whose originator supplied a `client_msg_id` on `chatInput`.
+  optional string client_msg_id = 7;
+  // Turn lifecycle status. Only meaningful for user rows; assistant/system
+  // rows are always TURN_STATUS_COMPLETED.
+  optional TurnStatus status = 8;
+  // Short tag populated alongside terminal failure statuses.
+  optional string failure_reason = 9;
+  // URL for pre-rendered TTS audio.
+  optional string audio_url = 10;
+  // Inline Moumantai UI components rendered alongside the text.
+  repeated ComponentDef ui_blocks = 11;
+  // Stable deviceId of the originating device. Set on user rows only —
+  // assistant/system rows omit it.
+  optional string origin_device_id = 12;
+  // Thread kind. Unset == CHAT.
+  optional ChatKind kind = 13;
+}
+
+// One entry in a `ChatWindowMsg`: the authoritative server-side snapshot of a
+// row in the visible chat log.
+message ChatWindowEntry {
+  // Message row UUID.
+  string id = 1;
+  // Monotonic per-conversation sequence.
+  int64 seq = 2;
+  // Speaker role.
+  ChatRole role = 3;
+  // Message body.
+  string text = 4;
+  // 'direct_user_chat' | 'delegated_from_home'. Empty / unset for older rows.
+  optional string turn_mode = 5;
+  // 'home' for delegated entries in a target app's log; unset otherwise.
+  optional string source = 6;
+  // Parsed tool_calls bag if present. Free-form per server.
+  optional google.protobuf.Struct tool_calls = 7;
+  // Client-generated idempotency key. Persisted on user rows for
+  // optimistic-bubble reconciliation across reconnect.
+  optional string client_msg_id = 8;
+  // Turn lifecycle status.
+  optional TurnStatus status = 9;
+  // Short failure tag when status is a terminal-failure variant.
+  optional string failure_reason = 10;
+  // ISO-8601 row creation timestamp.
+  string created_at = 11;
+  // See `ChatMessage.origin_device_id`. Set only on user rows.
+  optional string origin_device_id = 12;
+  // Thread kind. Unset == CHAT.
+  optional ChatKind kind = 13;
+}
+
+// Server → client authoritative snapshot of a scope's active conversation.
+// Sent in response to `ViewingMsg` and after `ResetConversationMsg`.
+// Not durable. Client replaces its chat log wholesale; a changed
+// `conversation_id` signals to drop the prior cache.
+message ChatWindowMsg {
+  // 'home' or 'app:<app_id>'.
+  string scope = 1;
+  // Conversation UUID for the entries below.
+  string conversation_id = 2;
+  // Authoritative log entries.
+  repeated ChatWindowEntry entries = 3;
+  // Thread kind for this window. Unset == CHAT.
+  optional ChatKind kind = 4;
+}
+
+// Server → client incremental status update for an existing user row — sent
+// when a turn transitions state without a new chat row. Broadcast to every
+// socket in the scope for multi-device coherence.
+message ChatUpdateMsg {
+  // 'home' or 'app:<app_id>'.
+  string scope = 1;
+  string conversation_id = 2;
+  // Message row UUID being updated.
+  string id = 3;
+  // New lifecycle status.
+  TurnStatus status = 4;
+  // Short failure tag when status is a terminal-failure variant.
+  optional string failure_reason = 5;
+  // Echoed from the underlying user row (origin_device_id).
+  optional string origin_device_id = 6;
+  // Thread kind. Unset == CHAT.
+  optional ChatKind kind = 7;
+}
+
+// ---------------------------------------------------------------------------
+// Voice + audio
+// ---------------------------------------------------------------------------
+
+// Current voice pipeline state.
+message VoiceState {
+  // Current state machine value.
+  VoiceStateValue state = 1;
+}
+
+// Server → client request to render pre-generated TTS audio.
+message TTSRequest {
+  // Text to synthesize.
+  string text = 1;
+}
+
+// ---------------------------------------------------------------------------
+// Binary frame headers (proto-encoded inside the binary frame envelope)
+// ---------------------------------------------------------------------------
+
+// Per-chunk audio metadata. Proto-encoded in the header bytes of an Audio
+// binary frame; PCM16 payload follows immediately after.
+message AudioChunkHeader {
+  // 'home' or 'app:<app_id>'.
+  string scope = 1;
+  // Encoding format.
+  AudioFormat format = 2;
+  // Sample rate in Hz (typical: 16000 for pcm16).
+  int32 sample_rate = 3;
+  // True when this is the last chunk in the stream / utterance.
+  bool final = 4;
+  // Client-generated UUID for idempotent retries — set on the final chunk
+  // of a client→server upload only.
+  optional string client_msg_id = 5;
+}
+
+// ---------------------------------------------------------------------------
+// Client → server inputs
+// ---------------------------------------------------------------------------
+
+// Text chat input from the user. May carry one image attachment for multimodal
+// turns; text may be empty when image_data is set.
+message ChatInput {
+  // 'home' or 'app:<app_id>'.
+  string scope = 1;
+  // User text (UTF-8, soft-capped per server config). May be empty when
+  // image_data is set (caption-less image send).
+  string text = 2;
+  // Client-generated UUID for idempotent retries from the offline queue.
+  optional string client_msg_id = 3;
+  // Conversation id snapshot taken at enqueue time (offline-queue path only).
+  // When set AND non-matching to the server's current active conversation
+  // for `scope`, the server rejects with `error.code = STALE_CONVERSATION`.
+  optional string origin_conversation_id = 4;
+  // Inline image attachment. Client should downscale to ~1568px long edge.
+  // Empty bytes treated as absent.
+  optional bytes image_data = 5;
+  // MIME type for image_data — free-form string, e.g. "image/jpeg",
+  // "image/png", "image/webp". Required when image_data is set; ignored
+  // otherwise. Empty / unset is treated as absent. Server passes the value
+  // opaquely to the Anthropic vision API.
+  optional string image_mime_type = 6;
+  // Thread kind — routes to the regular agent (CHAT) or the edit-agent (DEV).
+  // Unset == CHAT.
+  optional ChatKind kind = 7;
+}
+
+// Per-image metadata in the header of an Image binary frame;
+// payload bytes follow immediately after.
+message ImageChunkHeader {
+  // 'home' or 'app:<app_id>'.
+  string scope = 1;
+  // MIME type of the upload — free-form string, e.g. "image/jpeg",
+  // "image/png", "image/webp". Empty / unset is treated as unknown.
+  string mime_type = 2;
+  // Client-generated UUID for idempotent retries.
+  optional string client_msg_id = 3;
+}
+
+// ---------------------------------------------------------------------------
+// Chat history pagination
+// ---------------------------------------------------------------------------
+
+// Client → server request for chat entries older than a given seq.
+// Drives "load earlier" pagination. Server replies with `ChatHistoryMsg`.
+message FetchOlderMsg {
+  // 'home' or 'app:<app_id>'.
+  string scope = 1;
+  // Exclusive cursor: return entries with seq < before_seq, ordered ascending.
+  // Set to the oldest seq currently held locally; 0 means "from newest"
+  // (effectively last `limit` entries — same as ChatWindowMsg without seq
+  // gating).
+  int64 before_seq = 2;
+  // Page size. Server clamps to a sane max (e.g., 200). Default 50 if 0.
+  int32 limit = 3;
+  // Thread kind. Unset == CHAT.
+  optional ChatKind kind = 4;
+}
+
+// Server → client paged history response for `FetchOlderMsg`. Disposable.
+// Client prepends entries, deduping by id.
+message ChatHistoryMsg {
+  // 'home' or 'app:<app_id>'.
+  string scope = 1;
+  // Conversation UUID of the entries — used to detect mid-pagination resets.
+  string conversation_id = 2;
+  // Older-than-cursor entries, in ascending seq order.
+  repeated ChatWindowEntry entries = 3;
+  // True when older entries still exist before the oldest returned.
+  bool has_more = 4;
+  // Thread kind. Unset == CHAT.
+  optional ChatKind kind = 5;
+}
+
+// ---------------------------------------------------------------------------
+// Edit-agent progress (TodoWrite forwarding)
+// ---------------------------------------------------------------------------
+
+// Server → client echo of the edit-agent's TodoWrite tool call. The adapter
+// detects TodoWrite events and forwards the list; the PWA renders a pinned
+// progress card in the dev chat.
+message ChatTodosUpdate {
+  // 'home' or 'app:<app_id>'.
+  string scope = 1;
+  // Owning dev conversation UUID.
+  string conversation_id = 2;
+  // Always CHAT_KIND_DEV in v1.
+  ChatKind kind = 3;
+  // Current todo list (full snapshot, not a delta).
+  repeated TodoItem todos = 4;
+}
+
+// One item in the edit-agent's TodoWrite list.
+message TodoItem {
+  // Task description (declarative, e.g. "Implement user authentication").
+  string content = 1;
+  // Current status.
+  TodoStatus status = 2;
+  // Gerund form shown while in progress (e.g. "Implementing user
+  // authentication"). PWA shows `active_form` when status == IN_PROGRESS,
+  // else `content`.
+  string active_form = 3;
+}

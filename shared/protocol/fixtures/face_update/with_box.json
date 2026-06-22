@@ -1,0 +1,58 @@
+{
+  "scope": "app:stream",
+  "appId": "stream",
+  "faceId": "now_playing",
+  "components": [
+    { "id": "root", "scaffold": { "topBar": "bar", "body": "content" } },
+    { "id": "bar", "topBar": { "title": { "literal": "Now Playing" } } },
+    {
+      "id": "content",
+      "column": {
+        "children": ["thumb_card"],
+        "spacing": 8,
+        "modifier": { "padding": { "dp": 16 } }
+      }
+    },
+    {
+      "id": "thumb_card",
+      "card": {
+        "children": ["thumb_overlay"],
+        "emphasis": "elevated"
+      }
+    },
+    {
+      "id": "thumb_overlay",
+      "box": {
+        "children": ["thumb_image", "live_pill"],
+        "contentAlignment": "bottomEnd",
+        "childAlignment": ["topStart", "bottomEnd"]
+      }
+    },
+    {
+      "id": "thumb_image",
+      "image": {
+        "src": { "path": "/show/thumbnail_url" },
+        "alt": "Show thumbnail",
+        "fit": "crop"
+      }
+    },
+    {
+      "id": "live_pill",
+      "card": {
+        "children": ["live_label"],
+        "tone": "error"
+      }
+    },
+    {
+      "id": "live_label",
+      "text": {
+        "text": { "literal": "LIVE" },
+        "typography": "labelSmall",
+        "color": "onError"
+      }
+    }
+  ],
+  "data": {
+    "show": { "thumbnail_url": "https://example.com/show.jpg" }
+  }
+}

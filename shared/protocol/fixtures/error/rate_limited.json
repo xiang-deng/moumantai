@@ -1,0 +1,5 @@
+{
+  "code": "PROTOCOL_ERROR_CODE_RATE_LIMITED",
+  "message": "Too many turns; back off",
+  "retryAfterMs": 5000
+}

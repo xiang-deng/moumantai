@@ -1,0 +1,185 @@
+# Compact sizeClass (screen width ≤ 240dp). Applies to: Wear-OS and future
+# ≤ 240dp peripherals. ESP32 uses expanded (server classifies by wire width).
+#
+# Source of truth for all clients — do not hand-edit generated files.
+# Run: uv run python scripts/generate-tokens.py
+#
+# Scoped (may differ): typography, spacing, sizing
+# Invariant (must match expanded.yaml, enforced by test-token-shape.py):
+#   typographyLineHeight, shape, shapeAlias, elevation, motion, state, color, zIndex
+
+# ===========================================================================
+# Scoped — values differ per SizeClass
+# ===========================================================================
+
+# M3 type-scale sizes (sp / px). Compact shrinks ~20% vs expanded.
+typography:
+  displayLarge: 34
+  displayMedium: 30
+  displaySmall: 28
+  headlineLarge: 18
+  headlineMedium: 17
+  headlineSmall: 16
+  titleLarge: 18
+  titleMedium: 16
+  titleSmall: 15
+  bodyLarge: 14
+  bodyMedium: 13
+  bodySmall: 11
+  labelLarge: 11
+  labelMedium: 10
+  labelSmall: 9
+
+# M3 spacing scale — compact = ~50% of expanded (watches need denser layouts).
+spacing:
+  xs: 2
+  s: 4
+  m: 8
+  l: 12
+  xl: 16
+
+# Per-component dimensions. Compact: touch-target baseline (height ≥ 48dp).
+sizing:
+  buttonHeight: 48
+  buttonPaddingX: 16
+  chipHeight: 36
+  chipPaddingX: 12
+  fabSize: 48
+  fabExtendedHeight: 48
+  inputHeight: 48
+  inputPaddingX: 12
+  dialogPadding: 16
+  iconSizeSmall: 16
+  iconSize: 20
+  iconSizeLarge: 28
+  listItemHeight: 44
+  topbarHeight: 0
+  cardPadding: 8
+  scaffoldBodyPadding: '4px 0'
+  switchTrackW: 52
+  switchTrackH: 32
+  switchThumbSm: 16
+  switchThumbLg: 24
+  iconTapTarget: 40
+
+# ===========================================================================
+# Invariant — same in compact + expanded (drift-guard enforces values match)
+# ===========================================================================
+
+# M3 type-scale line-height multipliers (unitless: rendered line-box = lineHeight × size).
+typographyLineHeight:
+  displayLarge: 1.12
+  displayMedium: 1.16
+  displaySmall: 1.22
+  headlineLarge: 1.25
+  headlineMedium: 1.29
+  headlineSmall: 1.33
+  titleLarge: 1.27
+  titleMedium: 1.50
+  titleSmall: 1.43
+  bodyLarge: 1.50
+  bodyMedium: 1.43
+  bodySmall: 1.33
+  labelLarge: 1.43
+  labelMedium: 1.33
+  labelSmall: 1.45
+
+# Primitive shape scale (dp). `full` = pill: 9999px on web,
+# RoundedCornerShape(percent=50) on Compose, LV_RADIUS_CIRCLE on LVGL.
+shape:
+  none: 0
+  xs: 4
+  sm: 8
+  md: 12
+  lg: 16
+  xl: 24
+  full: 9999
+
+# Component → primitive alias. New components must pick from the scale above
+# (no ad-hoc dp values).
+shapeAlias:
+  cardRadius: md
+  dialogRadius: xl
+  fabRadius: lg
+  chipRadius: sm
+  inputRadius: xs
+  buttonRadius: full
+
+# M3 elevation levels (0/1/3/5). Web = composite shadow string; Android =
+# Compose Modifier.shadow(N.dp); ESP32 = LVGL per-property via apply_elevation().
+elevation:
+  none: 'none'
+  raised: '0 1px 2px rgba(0,0,0,0.30), 0 1px 3px 1px rgba(0,0,0,0.15)'
+  floating: '0 1px 3px rgba(0,0,0,0.30), 0 4px 8px 3px rgba(0,0,0,0.15)'
+  elevated: '0 4px 4px rgba(0,0,0,0.30), 0 8px 12px 6px rgba(0,0,0,0.15)'
+
+# Cross-platform motion surface. Core: durationShort/Medium + easingStandard
+# (bound by Kotlin tokens + ESP32). Extended: M3 full duration scale +
+# Expressive easing trio (web/PWA-CSS, consumed via generic iteration).
+motion:
+  durationShort: 150
+  durationMedium: 250
+  easingStandard: 'cubic-bezier(0.2, 0, 0, 1)'
+  durationShort1: 50
+  durationShort2: 100
+  durationShort3: 150
+  durationShort4: 200
+  durationMedium1: 250
+  durationMedium2: 300
+  durationLong1: 400
+  durationLong2: 500
+  durationLong3: 550
+  durationLong4: 600
+  easingEmphasized: 'cubic-bezier(0.2, 0, 0, 1)'
+  easingEmphasizedDecelerate: 'cubic-bezier(0.05, 0.7, 0.1, 1)'
+  easingEmphasizedAccelerate: 'cubic-bezier(0.3, 0, 0.8, 0.15)'
+
+# M3 state-layer opacities (0..1). Generators emit as STATE_<NAME>_OPACITY.
+state:
+  disabled: 0.38
+  hover: 0.08
+  focus: 0.10
+  pressed: 0.10
+  dragged: 0.16
+
+# M3 dark-theme color scheme (29 of 33 roles; scrim/shadow/surface-dim/bright omitted).
+color:
+  primary: '#D0BCFF'
+  onPrimary: '#381E72'
+  primaryContainer: '#4F378B'
+  onPrimaryContainer: '#EADDFF'
+  secondary: '#CCC2DC'
+  onSecondary: '#332D41'
+  secondaryContainer: '#4A4458'
+  onSecondaryContainer: '#E8DEF8'
+  # Tertiary: teal-tuned, matches clients/android/theme/Color.kt.
+  tertiary: '#AECAE5'
+  onTertiary: '#163348'
+  tertiaryContainer: '#2E4A60'
+  onTertiaryContainer: '#CAE6FF'
+  error: '#F2B8B5'
+  onError: '#601410'
+  errorContainer: '#8C1D18'
+  onErrorContainer: '#F9DEDC'
+  surface: '#1C1B1F'
+  onSurface: '#E6E1E5'
+  surfaceVariant: '#49454F'
+  onSurfaceVariant: '#CAC4D0'
+  surfaceContainerLowest: '#080E0C'
+  surfaceContainerLow: '#1D1B20'
+  surfaceContainer: '#211F26'
+  surfaceContainerHigh: '#2B2930'
+  surfaceContainerHighest: '#36343B'
+  outline: '#938F99'
+  outlineVariant: '#49454F'
+  inverseSurface: '#E6E1E5'
+  inverseOnSurface: '#313033'
+
+# PWA z-layer scale (Compose uses its own layering model).
+zIndex:
+  raised: 5
+  overlay: 10
+  modal: 20
+  elevated: 30
+  compactOverlay: 100
+  toast: 1000

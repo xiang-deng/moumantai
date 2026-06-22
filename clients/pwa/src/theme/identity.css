@@ -1,0 +1,59 @@
+/* --------------------------------------------------------------------------
+ * PWA visual identity — M3 Expressive overrides of catalog defaults.
+ *
+ *   - SHAPE — pill buttons/chips, 16dp cards, 8dp inputs (M3 Expressive's
+ *     per-family shape variation, away from "one rounded everything").
+ *   - ELEVATION — quiet 2-layer shadows in light; dark suppresses shadows
+ *     (tonal-container shifts carry hierarchy instead).
+ *   - STATE LAYER — composited tokens for hover/focus/pressed/dragged via
+ *     `color-mix(on-surface, catalog-opacity)` pseudo-element overlay.
+ *
+ * MUST load after generated/tokens.css, before components.base.css.
+ * --------------------------------------------------------------------------*/
+
+:root {
+  /* ---- M3 Expressive shape assignments ---- */
+  --moumantai-button-radius: var(--moumantai-shape-full); /* pill */
+  --moumantai-chip-radius: var(--moumantai-shape-full); /* pill */
+  --moumantai-fab-radius: var(--moumantai-shape-lg); /* 16dp */
+  --moumantai-card-radius: var(--moumantai-shape-lg); /* 16dp */
+  --moumantai-dialog-radius: var(--moumantai-shape-xl); /* 24dp (M3 spec 28dp) */
+  --moumantai-input-radius: var(--moumantai-shape-sm); /* 8dp */
+
+  /* ---- M3 elevation — light theme ----
+   * `raised`/`floating`/`elevated` → M3 Levels 1/3/5; Levels 2/4 unused. */
+  --moumantai-elevation-none: none;
+  --moumantai-elevation-raised: 0 1px 2px rgba(0, 0, 0, 0.15);
+  --moumantai-elevation-floating: 0 1px 3px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.15);
+  --moumantai-elevation-elevated: 0 2px 3px rgba(0, 0, 0, 0.15), 0 6px 10px rgba(0, 0, 0, 0.15);
+
+  /* ---- M3 state-layer composites ----
+   * Catalog opacities are 0..1; `calc(opacity * 100%)` converts to color-mix %. */
+  --moumantai-state-layer-hover: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-hover) * 100%),
+    transparent
+  );
+  --moumantai-state-layer-focus: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-focus) * 100%),
+    transparent
+  );
+  --moumantai-state-layer-pressed: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-pressed) * 100%),
+    transparent
+  );
+  --moumantai-state-layer-dragged: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-dragged) * 100%),
+    transparent
+  );
+}
+
+/* Dark theme: suppress shadows — tonal-container shifts carry hierarchy instead. */
+[data-theme='dark'] {
+  --moumantai-elevation-raised: none;
+  --moumantai-elevation-floating: 0 2px 6px rgba(0, 0, 0, 0.5);
+  --moumantai-elevation-elevated: 0 4px 10px rgba(0, 0, 0, 0.6);
+}

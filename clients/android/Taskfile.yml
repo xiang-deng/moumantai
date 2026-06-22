@@ -1,0 +1,49 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+vars:
+  WORKSPACE_ID: android
+  WORKSPACE_NAME: 'Android phone'
+  WORKSPACE_TYPE: client
+  FORM_FACTOR: phone
+  PLATFORM: android
+  APP_ID: com.moumantai.client
+  MIN_SDK: 28
+  TARGET_SDK: 36
+  COMPILE_SDK: 36
+  STACK: 'Kotlin 2.0.21 + Compose M3 (BoM 2024.10.01) + AGP 8.7.3'
+  GRADLEW: '{{if eq OS "windows"}}{{.TASKFILE_DIR}}/gradlew.bat{{else}}./gradlew{{end}}'
+  AVD_NAME: '{{.AVD_NAME | default "Small_Cover_Screen"}}'
+tasks:
+  build:
+    desc: 'Build debug APK'
+    cmds: ['{{.GRADLEW}} :app:assembleDebug']
+  install:
+    desc: 'Install debug APK to connected device/emulator'
+    cmds: ['{{.GRADLEW}} :app:installDebug']
+  test:
+    desc: 'Run unit tests'
+    cmds: ['{{.GRADLEW}} :app:testDebugUnitTest']
+  format:
+    desc: 'Auto-format Kotlin (Spotless + ktlint from Maven)'
+    cmds: ['{{.GRADLEW}} :app:spotlessApply']
+  format-check:
+    desc: 'Verify Kotlin formatting (Spotless + ktlint); CI gate'
+    cmds: ['{{.GRADLEW}} :app:spotlessCheck']
+  test-form-semantics:
+    desc: 'Form-semantics conformance test only (driven by shared/protocol fixture)'
+    cmds:
+      [
+        '{{.GRADLEW}} :app:testDebugUnitTest --tests com.moumantai.client.renderer.FormSemanticsConformanceTest',
+      ]
+  test-layout-resolution:
+    desc: 'Layout-resolution conformance test only (driven by shared/protocol fixture)'
+    cmds:
+      [
+        '{{.GRADLEW}} :app:testDebugUnitTest --tests com.moumantai.client.renderer.LayoutResolutionConformanceTest',
+      ]
+  e2e:
+    desc: 'Boot AVD ({{.AVD_NAME}}) + connectedAndroidTest. Override with `task android:e2e AVD_NAME=<your-avd>`.'
+    cmds: ['AVD_NAME={{.AVD_NAME}} bash run-e2e-tests.sh']
+  clean:
+    desc: 'Gradle clean'
+    cmds: ['{{.GRADLEW}} clean']

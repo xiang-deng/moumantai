@@ -1,0 +1,12 @@
+version: v2
+plugins:
+  # protobuf-es — TypeScript bindings.
+  #
+  # Buf v2 on Windows can't execute the .cmd shim, so we point at the entry
+  # script with `node` explicitly. Path is relative to the buf invocation cwd
+  # (the repo root); see scripts/build-protocol.py.
+  - local: [node, ./node_modules/@bufbuild/protoc-gen-es/bin/protoc-gen-es]
+    out: ./shared/protocol/src/generated
+    opt:
+      - target=ts
+      - import_extension=js

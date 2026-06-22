@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "useDefineForClassFields": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@moumantai/protocol/generated/moumantai/v1": [
+        "../../shared/protocol/src/generated/moumantai/v1/index.ts"
+      ],
+      "@moumantai/protocol/design-system": [
+        "../../shared/protocol/design-system/generated/design-system.ts"
+      ],
+      "@moumantai/protocol": ["../../shared/protocol/src/index.ts"]
+    }
+  },
+  "include": ["src", "tests"]
+}

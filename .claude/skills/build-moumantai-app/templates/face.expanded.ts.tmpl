@@ -1,0 +1,38 @@
+import { defineFace } from 'moumantai'
+import { scaffold, topBar, column } from 'moumantai/ui'
+// Patterns (from 'moumantai/ui') — same vocabulary as compact, often composed
+// differently:
+//   hero, kpi, emptyState, actionRow
+// import { kpi, emptyState } from 'moumantai/ui'
+import { resolve } from './__FACE_ID__.resolve.js'
+import { __FACE_ID_CAMEL__Body } from './__FACE_ID__.parts.js'
+
+/**
+ * Expanded variant: phone / tablet / wide web.
+ *
+ * Information-dense IA: TopBar + denser body + actions. Same face id and
+ * resolver as the compact variant; never duplicate the resolver. Compose
+ * the same patterns (hero, kpi, emptyState, actionRow) but typically with
+ * more children and a `topBar` for the face title.
+ *
+ * The framework owns body scrolling — DON'T write `column(scroll: true)`
+ * on the face body. The renderer wraps body in a LazyColumn (phone) or
+ * scrollable container (web) when body_kind is the default BodyKind.LIST.
+ * (`body_kind` is the BodyKind enum from 'moumantai/ui', never a string.)
+ */
+export default defineFace({
+  id: '__FACE_ID__',
+  label: '__FACE_LABEL__',
+  kind: 'expanded',
+  position: 0,
+  resolve,
+  components: [
+    scaffold('root', { body: 'content', top_bar: 'top' }),
+    topBar('top', '__APP_NAME__'),
+    column('content', [
+      // TODO: same child ids as compact variant (often denser layout)
+      'placeholder',
+    ], { spacing: 16, padding: 16 }),
+    ...__FACE_ID_CAMEL__Body(),
+  ],
+})

@@ -1,0 +1,33 @@
+/* Dark theme — PWA-local aliases over the M3 dark scheme.
+ *
+ * The 5 surface-container levels come from the auto-generated tokens.css.
+ * This file aliases --bg/--fg/--accent to their M3 token equivalents so the
+ * dynamic-palette runtime reaches them, and tunes danger/warn/success for
+ * legibility on dark surfaces.
+ *
+ * Does NOT override --md-sys-color-surface-container-*: generated catalog
+ * values flow through so all 5 tones stay distinct. */
+
+:root[data-theme='dark'] {
+  /* PWA-local aliases → M3 tokens; kept in sync by the dynamic-palette runtime. */
+  --bg: var(--md-sys-color-surface);
+  --bg-2: var(--md-sys-color-surface-container-low);
+  --bg-3: var(--md-sys-color-surface-container);
+  --bg-pressed: var(--md-sys-color-surface-container-high);
+  --fg: var(--md-sys-color-on-surface);
+  --fg-2: var(--md-sys-color-on-surface-variant);
+  --fg-3: var(--md-sys-color-outline);
+  --accent: var(--md-sys-color-primary);
+  --accent-fg: var(--md-sys-color-on-primary);
+  --accent-pressed: var(--md-sys-color-primary-container);
+
+  /* Semantic overrides tuned for dark surfaces. */
+  --danger: var(--md-sys-color-error);
+  --warn: var(--md-sys-color-tertiary);
+  --success: #4cc996;
+
+  /* M3 has no `warning` color role; alias it to error-container so the
+   * design-system `warning` tone degrades gracefully (matches Android). */
+  --md-sys-color-warning: var(--md-sys-color-error-container);
+  --md-sys-color-on-warning: var(--md-sys-color-on-error-container);
+}

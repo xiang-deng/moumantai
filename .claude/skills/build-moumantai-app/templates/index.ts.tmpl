@@ -1,0 +1,42 @@
+import type { AppDefinition } from 'moumantai'
+import { manifest } from './manifest.js'
+import * as schema from './schema.js'
+import { resolve } from 'path'
+import { fileURLToPath } from 'url'
+
+// TODO: import tools and face DEFAULTS as you author them.
+// Tools live flat in ./tools/<verb-noun>.ts.
+// Faces live in per-face subdirs: ./faces/<face-id>/<face-id>.js (the COMPACT/default variant).
+// Do NOT import ./faces/<id>/<id>.expanded.js — variants are auto-loaded by the framework.
+//
+// Example (diet-tracker-style, three faces):
+// import addMeal from './tools/add-meal.js'
+// import queryMeals from './tools/query-meals.js'
+// import deleteMeal from './tools/delete-meal.js'
+// import dailySummary from './tools/daily-summary.js'
+// import todayFace from './faces/today/today.js'
+// import historyFace from './faces/history/history.js'
+// import goalsFace from './faces/goals/goals.js'
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
+
+export function create__PASCAL_NAME__Def(): AppDefinition {
+  return {
+    manifest,
+    schema,
+    migrationsFolder: resolve(__dirname, 'drizzle'),
+    tools: [
+      // TODO: list every tool from design.md here, e.g.:
+      // addMeal, queryMeals, deleteMeal, dailySummary,
+    ],
+    faces: [
+      // TODO: DEFAULT face per face-id only. Variants auto-loaded.
+      // todayFace, historyFace, goalsFace,
+    ],
+    skill:
+      'TODO: one to two sentences of domain context passed to the LLM as a system-prompt hint. ' +
+      'Describe what this app does, name the tools briefly, and any guidance the LLM should follow ' +
+      '(e.g. "estimate calories for common foods when the user does not specify"). ' +
+      'This field is required for good LLM tool-selection.',
+  }
+}

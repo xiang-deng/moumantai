@@ -1,0 +1,15 @@
+version: v2
+modules:
+  - path: .
+    name: buf.build/moumantai/v1
+lint:
+  use:
+    - STANDARD
+  except:
+    # Allow `nanopb.options` and `.proto` to coexist with Google's
+    # well-known google/protobuf/struct.proto; we don't enforce a
+    # FILE_LOWER_SNAKE_CASE rule on imported well-knowns.
+    - FILE_LOWER_SNAKE_CASE
+breaking:
+  use:
+    - FILE

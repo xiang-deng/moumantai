@@ -1,0 +1,47 @@
+# Multi-language auto-formatting (bootstrapped per-hook; nothing to install globally).
+#   task format          # apply  (= pre-commit run --all-files)
+#   task format:check    # verify (CI gate)
+#   pre-commit autoupdate # bump hook versions
+#
+# Exclude generated + vendored trees — formatting them causes permanent gen-check
+# drift. The apps/ submodule is its own repo.
+exclude: |
+  (?x)^(
+    .*/generated/.*|
+    shared/protocol/src/generated/.*|
+    shared/protocol/design-system/generated/.*|
+    clients/.*/app/src/main/java/com/moumantai/protocol/.*|
+    clients/esp32/components/transport/generated/.*|
+    clients/esp32/components/renderer/include/generated_tokens\.h|
+    clients/esp32/managed_components/.*|
+    apps/.*|
+    .*\.bin$|
+    package-lock\.json|
+    uv\.lock|
+    .*/build/.*|
+    dist/.*
+  )$
+
+repos:
+  # TypeScript / JS / JSON / CSS / YAML — NOT Markdown (docs stay as authored).
+  - repo: https://github.com/rbubley/mirrors-prettier
+    rev: v3.8.3
+    hooks:
+      - id: prettier
+        types_or: [ts, tsx, javascript, jsx, json, css, yaml]
+
+  # Python
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.16
+    hooks:
+      - id: ruff-format
+
+  # Kotlin (Android + Wear) is handled by Spotless via Gradle — `task android:format` /
+  # `task wear-os:format`. The root `task format` runs both alongside pre-commit.
+
+  # Hand-written ESP32 C only
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v22.1.5
+    hooks:
+      - id: clang-format
+        files: ^clients/esp32/.*\.(c|h)$

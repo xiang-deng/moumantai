@@ -1,0 +1,83 @@
+/* M3 small FAB — bottom-right of mini-app pages.
+ *
+ * 56dp circle, primary-container bg, level-3 shadow, M3 state-layer overlay
+ * on hover/focus/press. Anchors to the bottom-right with safe-area inset.
+ */
+.fab {
+  position: absolute;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--moumantai-shape-lg);
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  box-shadow: var(--moumantai-elevation-floating);
+  cursor: pointer;
+  z-index: var(--moumantai-z-raised);
+  overflow: hidden;
+  transition: box-shadow var(--moumantai-motion-duration-short3)
+    var(--moumantai-motion-easing-emphasized);
+}
+
+.fab::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background-color: transparent;
+  transition: background-color var(--moumantai-motion-duration-short2)
+    var(--moumantai-motion-easing-emphasized);
+}
+.fab:hover::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-primary-container) calc(var(--moumantai-state-hover) * 100%),
+    transparent
+  );
+}
+.fab:focus-visible::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-primary-container) calc(var(--moumantai-state-focus) * 100%),
+    transparent
+  );
+}
+.fab:active::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-primary-container) calc(var(--moumantai-state-pressed) * 100%),
+    transparent
+  );
+}
+
+.fab:hover {
+  box-shadow: var(--moumantai-elevation-elevated);
+}
+
+.fab .material-symbols-rounded {
+  font-size: 24px;
+  font-variation-settings:
+    'opsz' 24,
+    'wght' 500,
+    'FILL' 0,
+    'GRAD' 0;
+}
+
+/* Pending state — assistant is mid-turn for this app. Spins the
+ * `progress_activity` glyph the renderer swaps in. Visual mirrors
+ * Android's per-scope thinking indicator. */
+.fab[data-pending] .material-symbols-rounded {
+  animation: fab-spin 1.2s linear infinite;
+}
+
+@keyframes fab-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

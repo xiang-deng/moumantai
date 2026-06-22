@@ -1,0 +1,25 @@
+// Add `integer`, `real`, etc. to this import (and `import { sql } from 'drizzle-orm'`)
+// when your tables need them — the strict typecheck flags unused imports.
+import { sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { id, timestamps } from 'moumantai'
+
+// !!! REPLACE (do not extend) the placeholder below with the tables from design.md.
+// If you leave __APP_ID_SNAKE___placeholder in, it will be in the migration SQL
+// and you'll have a dead table in your app forever.
+//
+// Example (diet-tracker):
+// export const meals = sqliteTable('meals', {
+//   ...id(),
+//   name: text('name').notNull(),
+//   calories: integer('calories').notNull(),
+//   meal_type: text('meal_type').notNull(),
+//   eaten_at: text('eaten_at').default(sql`(CURRENT_TIMESTAMP)`),
+//   ...timestamps(),
+// })
+
+// DELETE THIS PLACEHOLDER before calling the generate_migration tool
+export const __APP_ID_SNAKE___placeholder = sqliteTable('__APP_ID_SNAKE___placeholder', {
+  ...id(),
+  note: text('note'),
+  ...timestamps(),
+})

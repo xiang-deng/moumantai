@@ -1,0 +1,123 @@
+// App + face navigation messages.
+
+syntax = "proto3";
+
+package moumantai.v1;
+
+import "google/protobuf/struct.proto";
+import "moumantai/v1/components.proto";
+import "moumantai/v1/enums.proto";
+
+option java_package = "com.moumantai.protocol.v1";
+
+// ---------------------------------------------------------------------------
+// App descriptors
+// ---------------------------------------------------------------------------
+
+// Describes an installed app for the horizontal pager.
+message AppInfo {
+  // Stable kebab-case app id (e.g. "spend-tracker").
+  string app_id = 1;
+  // Display label.
+  string label = 2;
+  // Icon — Material Symbols name or 'fa:<name>' for FontAwesome fallback.
+  string icon = 3;
+  // Pager position (0-indexed).
+  int32 position = 4;
+  // Optional M3 brand seed (hex color, e.g. "#4CAF50"). PWA + Android derive
+  // a full tonal scheme from this and apply it when the app is foregrounded.
+  // Wear-OS and ESP32 intentionally ignore this field.
+  optional string theme_seed = 5;
+  // Live vs. draft variant. Unset == LIVE. DRAFT entries are appended only for
+  // dev clients previewing a new-app draft (edit drafts reuse the live entry).
+  optional AppVariant variant = 6;
+  // Set iff variant == DRAFT — the draft this entry belongs to.
+  optional string draft_id = 7;
+  // True for new-app drafts before promotion — no live agent chat exists yet,
+  // so the PWA hides the chat FAB.
+  optional bool chat_disabled = 8;
+}
+
+// Server sends the full app list at handshake and when apps change.
+message AppListMsg {
+  repeated AppInfo apps = 1;
+}
+
+// ---------------------------------------------------------------------------
+// Face descriptors
+// ---------------------------------------------------------------------------
+
+// Describes a face within an app for the vertical pager.
+message FaceInfo {
+  // Face id (lowercase). Unique within the parent app.
+  string face_id = 1;
+  // Display label.
+  string label = 2;
+  // Pager position (0-indexed).
+  int32 position = 3;
+}
+
+// Server sends the face list when client enters an app or faces change.
+message FaceListMsg {
+  // Owning app id.
+  string app_id = 1;
+  repeated FaceInfo faces = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Face render payload
+// ---------------------------------------------------------------------------
+
+// Atomic face render payload — components + resolved data.
+// `scope` gates broadcast fan-out: 'home' or 'app:<app_id>'.
+message FaceUpdateMsg {
+  // 'home' or 'app:<app_id>' — scope gate for broadcast fan-out.
+  string scope = 1;
+  // Owning app id.
+  string app_id = 2;
+  // Face id within the app.
+  string face_id = 3;
+  // Component definitions (flat list; the `scaffold` with id="root" is the
+  // entry point).
+  repeated ComponentDef components = 4;
+  // Nested face data model. Components bind via JSON-Pointer (`pathRef`).
+  google.protobuf.Struct data = 5;
+  // Live vs. draft variant. Unset == LIVE. DRAFT face updates are sent only to
+  // clients previewing this app's draft (per-client broadcast routing).
+  optional AppVariant variant = 6;
+}
+
+// ---------------------------------------------------------------------------
+// Navigation
+// ---------------------------------------------------------------------------
+
+// Server instructs client to navigate to an app (and optionally a face).
+message NavigateMsg {
+  // Target app id.
+  string app_id = 1;
+  // Optional target face id within the app.
+  optional string face_id = 2;
+  // Monotonic server seq (durable).
+  optional int64 seq = 3;
+}
+
+// Client declares the scope its UI is currently showing. Gates which chat +
+// face frames the server sends back. Sent on connect and every time the user
+// swipes between scopes.
+message ViewingMsg {
+  // 'home' or 'app:<app_id>'.
+  string scope = 1;
+}
+
+// ---------------------------------------------------------------------------
+// UI action escalation hint
+// ---------------------------------------------------------------------------
+
+// Server hint to the originating client that a UI tap escalated to a chat
+// dialog — purely a UX cue to focus the chat surface. Disposable: not durable,
+// not replayed on reconnect (auto-showing chat after a reconnect is intentionally
+// avoided).
+message UiActionEscalated {
+  // Scope of the originating tap. Renderers no-op if not their active scope.
+  string scope = 1;
+}

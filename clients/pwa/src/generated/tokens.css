@@ -1,0 +1,157 @@
+/* AUTO-GENERATED from shared/tokens/ — do not hand-edit */
+/* PWA — single-profile expanded tokens. Override in theme/identity.css. */
+
+:root {
+  /* Typography sizes (sp/px) */
+  --moumantai-display-large: 57px;
+  --moumantai-display-medium: 45px;
+  --moumantai-display-small: 36px;
+  --moumantai-headline-large: 32px;
+  --moumantai-headline-medium: 28px;
+  --moumantai-headline-small: 24px;
+  --moumantai-title-large: 22px;
+  --moumantai-title-medium: 16px;
+  --moumantai-title-small: 14px;
+  --moumantai-body-large: 16px;
+  --moumantai-body-medium: 14px;
+  --moumantai-body-small: 12px;
+  --moumantai-label-large: 14px;
+  --moumantai-label-medium: 12px;
+  --moumantai-label-small: 11px;
+
+  /* Spacing (dp/px) */
+  --moumantai-spacing-xs: 4px;
+  --moumantai-spacing-s: 8px;
+  --moumantai-spacing-m: 16px;
+  --moumantai-spacing-l: 24px;
+  --moumantai-spacing-xl: 32px;
+
+  /* Sizing — per-component dimensions */
+  --moumantai-button-height: 40px;
+  --moumantai-button-padding-x: 24px;
+  --moumantai-chip-height: 32px;
+  --moumantai-chip-padding-x: 16px;
+  --moumantai-fab-size: 56px;
+  --moumantai-fab-extended-height: 56px;
+  --moumantai-input-height: 56px;
+  --moumantai-input-padding-x: 16px;
+  --moumantai-dialog-padding: 24px;
+  --moumantai-icon-size-small: 18px;
+  --moumantai-icon-size: 24px;
+  --moumantai-icon-size-large: 32px;
+  --moumantai-list-item-height: 56px;
+  --moumantai-topbar-height: 56px;
+  --moumantai-card-padding: 16px;
+  --moumantai-scaffold-body-padding: 0;
+  --moumantai-switch-track-w: 52px;
+  --moumantai-switch-track-h: 32px;
+  --moumantai-switch-thumb-sm: 16px;
+  --moumantai-switch-thumb-lg: 24px;
+  --moumantai-icon-tap-target: 40px;
+
+  /* Typography line heights (unitless multipliers) */
+  --moumantai-display-large-line-height: 1.12;
+  --moumantai-display-medium-line-height: 1.16;
+  --moumantai-display-small-line-height: 1.22;
+  --moumantai-headline-large-line-height: 1.25;
+  --moumantai-headline-medium-line-height: 1.29;
+  --moumantai-headline-small-line-height: 1.33;
+  --moumantai-title-large-line-height: 1.27;
+  --moumantai-title-medium-line-height: 1.5;
+  --moumantai-title-small-line-height: 1.43;
+  --moumantai-body-large-line-height: 1.5;
+  --moumantai-body-medium-line-height: 1.43;
+  --moumantai-body-small-line-height: 1.33;
+  --moumantai-label-large-line-height: 1.43;
+  --moumantai-label-medium-line-height: 1.33;
+  --moumantai-label-small-line-height: 1.45;
+
+  /* Shape — primitive scale */
+  --moumantai-shape-none: 0px;
+  --moumantai-shape-xs: 4px;
+  --moumantai-shape-sm: 8px;
+  --moumantai-shape-md: 12px;
+  --moumantai-shape-lg: 16px;
+  --moumantai-shape-xl: 24px;
+  --moumantai-shape-full: 9999px;
+
+  /* Shape — component aliases (resolve to a primitive) */
+  --moumantai-card-radius: var(--moumantai-shape-md);
+  --moumantai-dialog-radius: var(--moumantai-shape-xl);
+  --moumantai-fab-radius: var(--moumantai-shape-lg);
+  --moumantai-chip-radius: var(--moumantai-shape-sm);
+  --moumantai-input-radius: var(--moumantai-shape-xs);
+  --moumantai-button-radius: var(--moumantai-shape-full);
+
+  /* Elevation — composite shadow strings */
+  --moumantai-elevation-none: none;
+  --moumantai-elevation-raised: 0 1px 2px rgba(0,0,0,0.30), 0 1px 3px 1px rgba(0,0,0,0.15);
+  --moumantai-elevation-floating: 0 1px 3px rgba(0,0,0,0.30), 0 4px 8px 3px rgba(0,0,0,0.15);
+  --moumantai-elevation-elevated: 0 4px 4px rgba(0,0,0,0.30), 0 8px 12px 6px rgba(0,0,0,0.15);
+
+  /* Motion — durations (ms) + easing */
+  --moumantai-motion-duration-short: 150ms;
+  --moumantai-motion-duration-medium: 250ms;
+  --moumantai-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --moumantai-motion-duration-short1: 50ms;
+  --moumantai-motion-duration-short2: 100ms;
+  --moumantai-motion-duration-short3: 150ms;
+  --moumantai-motion-duration-short4: 200ms;
+  --moumantai-motion-duration-medium1: 250ms;
+  --moumantai-motion-duration-medium2: 300ms;
+  --moumantai-motion-duration-long1: 400ms;
+  --moumantai-motion-duration-long2: 500ms;
+  --moumantai-motion-duration-long3: 550ms;
+  --moumantai-motion-duration-long4: 600ms;
+  --moumantai-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --moumantai-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --moumantai-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+
+  /* State opacities */
+  --moumantai-state-disabled: 0.38;
+  --moumantai-state-hover: 0.08;
+  --moumantai-state-focus: 0.1;
+  --moumantai-state-pressed: 0.1;
+  --moumantai-state-dragged: 0.16;
+
+  /* Color — M3 dark scheme (--md-sys-color-*) */
+  --md-sys-color-primary: #D0BCFF;
+  --md-sys-color-on-primary: #381E72;
+  --md-sys-color-primary-container: #4F378B;
+  --md-sys-color-on-primary-container: #EADDFF;
+  --md-sys-color-secondary: #CCC2DC;
+  --md-sys-color-on-secondary: #332D41;
+  --md-sys-color-secondary-container: #4A4458;
+  --md-sys-color-on-secondary-container: #E8DEF8;
+  --md-sys-color-tertiary: #AECAE5;
+  --md-sys-color-on-tertiary: #163348;
+  --md-sys-color-tertiary-container: #2E4A60;
+  --md-sys-color-on-tertiary-container: #CAE6FF;
+  --md-sys-color-error: #F2B8B5;
+  --md-sys-color-on-error: #601410;
+  --md-sys-color-error-container: #8C1D18;
+  --md-sys-color-on-error-container: #F9DEDC;
+  --md-sys-color-surface: #1C1B1F;
+  --md-sys-color-on-surface: #E6E1E5;
+  --md-sys-color-surface-variant: #49454F;
+  --md-sys-color-on-surface-variant: #CAC4D0;
+  --md-sys-color-surface-container-lowest: #080E0C;
+  --md-sys-color-surface-container-low: #1D1B20;
+  --md-sys-color-surface-container: #211F26;
+  --md-sys-color-surface-container-high: #2B2930;
+  --md-sys-color-surface-container-highest: #36343B;
+  --md-sys-color-outline: #938F99;
+  --md-sys-color-outline-variant: #49454F;
+  --md-sys-color-inverse-surface: #E6E1E5;
+  --md-sys-color-inverse-on-surface: #313033;
+
+  /* z-index stack */
+  --moumantai-z-raised: 5;
+  --moumantai-z-overlay: 10;
+  --moumantai-z-modal: 20;
+  --moumantai-z-elevated: 30;
+  --moumantai-z-compact-overlay: 100;
+  --moumantai-z-toast: 1000;
+
+}
+

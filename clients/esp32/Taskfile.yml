@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+vars:
+  WORKSPACE_ID: esp32
+  WORKSPACE_NAME: 'CrowPanel Advance 3.5" HMI'
+  WORKSPACE_TYPE: client
+  FORM_FACTOR: hmi-panel
+  PLATFORM: esp32-s3
+  MCU: esp32-s3
+  FLASH_MB: 16
+  PSRAM_MB: 8
+  DISPLAY: 'ILI9488 320x480 IPS, SPI 18-bit'
+  TOUCH: 'GT911 capacitive (I2C 0x5D)'
+  CONNECTIVITY: 'WiFi 2.4GHz, BLE 5.0'
+  IDF_VERSION: 'v5.4+'
+  STACK: 'ESP-IDF v5.4 + LVGL 9 + C'
+  IDF_PY: '{{.IDF_PY | default "idf.py"}}'
+  PORT: '{{.PORT   | default "COM3"}}'
+tasks:
+  set-target:
+    desc: 'One-time: set ESP-IDF target chip to esp32s3'
+    cmds: ['{{.IDF_PY}} set-target esp32s3']
+  menuconfig:
+    desc: 'Open ESP-IDF Kconfig UI (build-time options; WiFi/server URI are set on-device, not here)'
+    cmds: ['{{.IDF_PY}} menuconfig']
+  build:
+    desc: 'Build firmware (idf.py build)'
+    cmds: ['{{.IDF_PY}} build']
+  flash:
+    desc: 'Build, flash to PORT, and open serial monitor'
+    cmds: ['{{.IDF_PY}} -p {{.PORT}} flash monitor']
+  monitor:
+    desc: 'Open serial monitor on PORT'
+    cmds: ['{{.IDF_PY}} -p {{.PORT}} monitor']
+  clean:
+    desc: 'idf.py fullclean'
+    cmds: ['{{.IDF_PY}} fullclean']
+  fonts:
+    desc: 'Regenerate unified LVGL font (icons + emoji + CJK + Inter)'
+    cmds: ['uv run python assets/fonts/build_unified_font.py']

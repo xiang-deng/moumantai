@@ -1,0 +1,21 @@
+# Generated protocol bindings — codegen emits LF, so lock to LF and prevent
+# core.autocrlf from rewriting them on checkout (which produces phantom diffs
+# and breaks cross-language byte-identical fixture round-trips).
+shared/protocol/src/generated/** text eol=lf
+server/src/server/protocol/components/generated/** text eol=lf
+clients/android/app/src/main/java/com/moumantai/protocol/v1/** text eol=lf
+clients/wear-os/app/src/main/java/com/moumantai/protocol/v1/** text eol=lf
+clients/esp32/components/transport/generated/** text eol=lf
+
+# Generated design-system + token codegen — same LF lock (codegen emits LF;
+# without this, Windows core.autocrlf produces phantom diffs in `task format:check`).
+shared/protocol/design-system/generated/** text eol=lf
+clients/pwa/src/generated/** text eol=lf
+clients/android/app/src/main/java/com/moumantai/client/generated/** text eol=lf
+clients/wear-os/app/src/main/java/com/moumantai/wear/generated/** text eol=lf
+clients/esp32/components/renderer/include/generated_tokens.h text eol=lf
+
+# Proto sources — `buf format` is LF-only. Without this, Windows autocrlf
+# rewrites .proto on checkout to CRLF and `protocol:format-check` reports
+# every line as a diff (without showing visible content changes).
+shared/protocol/proto/** text eol=lf

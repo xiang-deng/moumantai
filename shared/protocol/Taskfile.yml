@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+vars:
+  WORKSPACE_ID: protocol
+  WORKSPACE_NAME: 'Wire protocol + shared types'
+  WORKSPACE_TYPE: shared
+  LANG: typescript
+  ROOT_DIR: '{{.TASKFILE_DIR}}/../..'
+  BUF: 'node {{.ROOT_DIR}}/node_modules/@bufbuild/buf/bin/buf'
+tasks:
+  typecheck:
+    desc: 'TypeScript no-emit check'
+    cmds: [npm run typecheck]
+  gen:
+    desc: 'Regenerate TS + Kotlin (Android & Wear) + C bindings from .proto'
+    dir: '{{.ROOT_DIR}}'
+    cmds: [uv run python scripts/build-protocol.py]
+  gen-fast:
+    desc: 'Regenerate TS + C only (skip slow Wire/Gradle codegen)'
+    dir: '{{.ROOT_DIR}}'
+    cmds: [uv run python scripts/build-protocol.py --skip-wire]
+  gen-check:
+    desc: 'Fail if any generated output is stale (re-runs codegen + diffs)'
+    dir: '{{.ROOT_DIR}}'
+    cmds: [uv run python scripts/build-protocol.py --check]
+  lint:
+    desc: 'buf lint — enforce STANDARD rules over .proto'
+    dir: '{{.TASKFILE_DIR}}/proto'
+    cmds: ['{{.BUF}} lint']
+  breaking:
+    desc: 'buf breaking — refuse non-additive .proto changes vs master'
+    dir: '{{.ROOT_DIR}}'
+    cmds: [uv run python scripts/check-breaking.py]
+  format:
+    desc: 'buf format -w — canonical .proto formatting'
+    dir: '{{.TASKFILE_DIR}}/proto'
+    cmds: ['{{.BUF}} format -w']
+  format-check:
+    desc: 'buf format -d — fail on non-canonical .proto formatting'
+    dir: '{{.TASKFILE_DIR}}/proto'
+    cmds: ['{{.BUF}} format -d --exit-code']
+  test-cross-language:
+    desc: 'TS / Kotlin / C round-trip every fixture; fail on byte-level divergence'
+    dir: '{{.ROOT_DIR}}'
+    cmds: [uv run python scripts/test-cross-language.py]
+  test-form-semantics:
+    desc: 'Cross-client conformance (server vitest leg only). For all three legs use root `task test-form-semantics`.'
+    deps: [server-form-semantics]
+  server-form-semantics:
+    internal: true
+    dir: '{{.ROOT_DIR}}/server'
+    cmds: ['npx vitest run tests/unit/agent/form-semantics-conformance.test.ts']
+  test-layout-resolution:
+    desc: 'Cross-renderer conformance (server vitest + ESP32 C legs). For all four legs use root `task test-layout-resolution`.'
+    deps: [server-layout-resolution, esp32-layout-resolution]
+  server-layout-resolution:
+    internal: true
+    dir: '{{.ROOT_DIR}}/server'
+    cmds: ['npx vitest run tests/unit/protocol/layout-resolution-conformance.test.ts']
+  esp32-layout-resolution:
+    desc: 'C host-mode conformance: compile design_system.c with gcc and run every spec.json fixture'
+    dir: '{{.ROOT_DIR}}'
+    cmds: ['uv run python shared/protocol/scripts/test-layout-resolution-c.py']
+  lint-layout:
+    desc: 'Drift sentinel: fail when renderers reintroduce hardcoded layout-imposing modifiers outside resolver helpers.'
+    dir: '{{.ROOT_DIR}}'
+    cmds: ['uv run python scripts/lint-layout.py']
+  lint-coverage:
+    desc: 'Drift sentinel: scan every renderer (Phone/Wear/PWA/ESP32) for unhandled ComponentDef variants + dropped proto fields.'
+    dir: '{{.ROOT_DIR}}'
+    cmds: ['uv run python shared/protocol/scripts/lint-renderer-coverage.py']

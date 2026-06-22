@@ -1,0 +1,28 @@
+.hidden {
+  display: none;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  background: var(--bg-2);
+  color: var(--fg-2);
+  flex-shrink: 0;
+  transition:
+    background var(--m-tap) var(--ease-out),
+    transform var(--m-tap) var(--ease-out);
+}
+
+.button:active {
+  transform: scale(0.97);
+  background: var(--bg-pressed);
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

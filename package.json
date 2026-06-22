@@ -1,0 +1,22 @@
+{
+  "name": "moumantai",
+  "description": "Self-hosted runtime for personal, agent-assisted apps across browsers, phones, watches, and embedded displays.",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiang-deng/moumantai.git"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "shared/protocol",
+    "server",
+    "clients/pwa"
+  ],
+  "devDependencies": {
+    "drizzle-orm": "^0.45.2"
+  }
+}

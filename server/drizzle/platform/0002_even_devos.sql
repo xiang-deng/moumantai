@@ -1,0 +1,1 @@
+ALTER TABLE `conversations` ADD `sdk_session_id` text;

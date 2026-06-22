@@ -1,0 +1,1305 @@
+/* ============================================================================
+ * Moumantai canonical component styles — shared across web-based clients (PWA).
+ *
+ * Defines `.moumantai-*` base + typography (`.md-typescale-*`) styles that
+ * every protocol-emitted component depends on. The PWA imports this file
+ * directly; global resets and tokens are the consumer's local responsibility.
+ *
+ * Variables expected at runtime:
+ *   --moumantai-*           sizing/typography/motion (consumer provides via
+ *                           generated tokens.css from shared/tokens/)
+ *   --md-sys-color-*        protocol color interface (consumer maps to its
+ *                           own palette in light/dark theme files)
+ *
+ * NOT included here:
+ *   - Global reset (each consumer has its own viewport conventions)
+ *   - Variant rules (`--filled`, `--fab`, etc.) — those live in the generated
+ *     `design-system.css` next door
+ * ============================================================================ */
+
+/* ============================================================================
+ * Typography token classes (md-typescale-*)
+ * ============================================================================ */
+[class^='md-typescale-'] {
+  font-family: inherit;
+}
+.md-typescale-display-large {
+  font-size: var(--moumantai-display-large);
+  font-weight: 400;
+  line-height: var(--moumantai-display-large-line-height);
+  letter-spacing: -0.25px;
+}
+.md-typescale-display-medium {
+  font-size: var(--moumantai-display-medium);
+  font-weight: 400;
+  line-height: var(--moumantai-display-medium-line-height);
+}
+.md-typescale-display-small {
+  font-size: var(--moumantai-display-small);
+  font-weight: 400;
+  line-height: var(--moumantai-display-small-line-height);
+}
+.md-typescale-headline-large {
+  font-size: var(--moumantai-headline-large);
+  font-weight: 400;
+  line-height: var(--moumantai-headline-large-line-height);
+}
+.md-typescale-headline-medium {
+  font-size: var(--moumantai-headline-medium);
+  font-weight: 400;
+  line-height: var(--moumantai-headline-medium-line-height);
+}
+.md-typescale-headline-small {
+  font-size: var(--moumantai-headline-small);
+  font-weight: 400;
+  line-height: var(--moumantai-headline-small-line-height);
+}
+.md-typescale-title-large {
+  font-size: var(--moumantai-title-large);
+  font-weight: 400;
+  line-height: var(--moumantai-title-large-line-height);
+}
+.md-typescale-title-medium {
+  font-size: var(--moumantai-title-medium);
+  font-weight: 500;
+  line-height: var(--moumantai-title-medium-line-height);
+}
+.md-typescale-title-small {
+  font-size: var(--moumantai-title-small);
+  font-weight: 500;
+  line-height: var(--moumantai-title-small-line-height);
+}
+.md-typescale-body-large {
+  font-size: var(--moumantai-body-large);
+  font-weight: 400;
+  line-height: var(--moumantai-body-large-line-height);
+}
+.md-typescale-body-medium {
+  font-size: var(--moumantai-body-medium);
+  font-weight: 400;
+  line-height: var(--moumantai-body-medium-line-height);
+}
+.md-typescale-body-small {
+  font-size: var(--moumantai-body-small);
+  font-weight: 400;
+  line-height: var(--moumantai-body-small-line-height);
+}
+.md-typescale-label-large {
+  font-size: var(--moumantai-label-large);
+  font-weight: 500;
+  line-height: var(--moumantai-label-large-line-height);
+}
+.md-typescale-label-medium {
+  font-size: var(--moumantai-label-medium);
+  font-weight: 500;
+  line-height: var(--moumantai-label-medium-line-height);
+}
+.md-typescale-label-small {
+  font-size: var(--moumantai-label-small);
+  font-weight: 500;
+  line-height: var(--moumantai-label-small-line-height);
+}
+
+/* ============================================================================
+ * Atoms — Divider
+ * Text / Icon / Image have no intrinsic CSS rules (sized via inline styles
+ * from the renderer and typography classes).
+ * Renderer: renderers/atoms.tsx
+ * ============================================================================ */
+.moumantai-divider {
+  border: none;
+  height: 1px;
+  background: var(--md-sys-color-outline-variant);
+}
+
+/* ============================================================================
+ * Button — M3 family (filled / tonal / outlined / text / elevated).
+ *
+ * Pill shape (radius=full) is the M3 expressive default. Every variant lays
+ * a state-layer pseudo-element overlay on top so hover/focus/press read
+ * with the same tinted-overlay language across the system. Filled and
+ * tonal variants paint the on-COLOR tint (legible against the filled bg);
+ * outlined and text paint the primary tint (legible on the surface).
+ *
+ * Renderer: renderers/actions.tsx · ButtonRenderer
+ * ============================================================================ */
+.moumantai-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--moumantai-spacing-s);
+  height: var(--moumantai-button-height);
+  padding: 0 var(--moumantai-button-padding-x);
+  border-radius: var(--moumantai-button-radius);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: var(--moumantai-label-large);
+  line-height: var(--moumantai-label-large-line-height);
+  letter-spacing: 0.01em;
+  transition:
+    background-color var(--moumantai-motion-duration-short3)
+      var(--moumantai-motion-easing-emphasized),
+    box-shadow var(--moumantai-motion-duration-short3) var(--moumantai-motion-easing-emphasized);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.moumantai-button:disabled {
+  opacity: var(--moumantai-state-disabled);
+  cursor: default;
+}
+
+/* State-layer pseudo-element. Color is set per-variant so the tint reads
+ * legibly against each background (on-primary for filled, primary for
+ * outlined/text, on-secondary-container for tonal). */
+.moumantai-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: transparent;
+  border-radius: inherit;
+  transition: background-color var(--moumantai-motion-duration-short2)
+    var(--moumantai-motion-easing-emphasized);
+}
+
+/* --- Filled (primary CTA) --- */
+.moumantai-button--filled {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+.moumantai-button--filled:hover:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-primary) calc(var(--moumantai-state-hover) * 100%),
+    transparent
+  );
+}
+.moumantai-button--filled:focus-visible:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-primary) calc(var(--moumantai-state-focus) * 100%),
+    transparent
+  );
+}
+.moumantai-button--filled:active:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-primary) calc(var(--moumantai-state-pressed) * 100%),
+    transparent
+  );
+}
+
+/* --- Tonal (secondary CTA) --- */
+.moumantai-button--tonal {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+.moumantai-button--tonal:hover:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-secondary-container) calc(var(--moumantai-state-hover) * 100%),
+    transparent
+  );
+}
+.moumantai-button--tonal:focus-visible:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-secondary-container) calc(var(--moumantai-state-focus) * 100%),
+    transparent
+  );
+}
+.moumantai-button--tonal:active:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-secondary-container) calc(var(--moumantai-state-pressed) * 100%),
+    transparent
+  );
+}
+
+/* --- Outlined (secondary action) --- */
+.moumantai-button--outlined {
+  background: transparent;
+  color: var(--md-sys-color-primary);
+  border: 1px solid var(--md-sys-color-outline);
+}
+.moumantai-button--outlined:hover:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) calc(var(--moumantai-state-hover) * 100%),
+    transparent
+  );
+}
+.moumantai-button--outlined:focus-visible:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) calc(var(--moumantai-state-focus) * 100%),
+    transparent
+  );
+}
+.moumantai-button--outlined:active:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) calc(var(--moumantai-state-pressed) * 100%),
+    transparent
+  );
+}
+
+/* --- Text (tertiary action) --- */
+.moumantai-button--text {
+  background: transparent;
+  color: var(--md-sys-color-primary);
+  padding: 0 var(--moumantai-spacing-l);
+}
+.moumantai-button--text:hover:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) calc(var(--moumantai-state-hover) * 100%),
+    transparent
+  );
+}
+.moumantai-button--text:focus-visible:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) calc(var(--moumantai-state-focus) * 100%),
+    transparent
+  );
+}
+.moumantai-button--text:active:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) calc(var(--moumantai-state-pressed) * 100%),
+    transparent
+  );
+}
+
+/* --- Elevated (primary on busy surface) --- */
+.moumantai-button--elevated {
+  background: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-primary);
+  box-shadow: var(--moumantai-elevation-raised);
+}
+.moumantai-button--elevated:hover:not(:disabled) {
+  box-shadow: var(--moumantai-elevation-floating);
+}
+.moumantai-button--elevated:hover:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) calc(var(--moumantai-state-hover) * 100%),
+    transparent
+  );
+}
+.moumantai-button--elevated:focus-visible:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) calc(var(--moumantai-state-focus) * 100%),
+    transparent
+  );
+}
+.moumantai-button--elevated:active:not(:disabled)::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) calc(var(--moumantai-state-pressed) * 100%),
+    transparent
+  );
+}
+
+/* --- FAB variant (separate DOM structure: absolutely-positioned float) --- */
+.moumantai-fab {
+  position: absolute;
+  bottom: var(--moumantai-spacing-xl);
+  right: var(--moumantai-spacing-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--moumantai-spacing-m);
+  border: none;
+  cursor: pointer;
+  z-index: var(--moumantai-z-raised);
+  transition: box-shadow var(--moumantai-motion-duration-short)
+    var(--moumantai-motion-easing-standard);
+}
+
+.moumantai-fab--small {
+  width: var(--moumantai-fab-size);
+  height: var(--moumantai-fab-size);
+  border-radius: var(--moumantai-fab-radius);
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  box-shadow: var(--moumantai-elevation-floating);
+}
+
+.moumantai-fab--extended {
+  height: var(--moumantai-fab-extended-height);
+  padding: 0 var(--moumantai-button-padding-x);
+  border-radius: var(--moumantai-fab-radius);
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  box-shadow: var(--moumantai-elevation-floating);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: var(--moumantai-label-large);
+  line-height: var(--moumantai-label-large-line-height);
+}
+
+.moumantai-fab:hover {
+  box-shadow: var(--moumantai-elevation-elevated);
+}
+
+/* ============================================================================
+ * Chip — M3 assist/filter pattern.
+ *
+ * Unselected: outlined transparent surface, on-surface-variant text.
+ * Selected (filter chips): secondary-container fill, on-secondary-container
+ * text, no border. State-layer overlay on hover/focus/press, color picked
+ * to legibly tint each state.
+ *
+ * Renderer: renderers/actions.tsx · ChipRenderer
+ * ============================================================================ */
+.moumantai-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--moumantai-spacing-s);
+  height: var(--moumantai-chip-height);
+  padding: 0 var(--moumantai-chip-padding-x);
+  border-radius: var(--moumantai-chip-radius);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  background: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: var(--moumantai-label-large);
+  line-height: var(--moumantai-label-large-line-height);
+  cursor: pointer;
+  transition:
+    background-color var(--moumantai-motion-duration-short3)
+      var(--moumantai-motion-easing-emphasized),
+    color var(--moumantai-motion-duration-short3) var(--moumantai-motion-easing-emphasized),
+    border-color var(--moumantai-motion-duration-short3) var(--moumantai-motion-easing-emphasized);
+  white-space: nowrap;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* State-layer overlay. Hover/focus/press tint with on-surface-variant
+ * (legible against the transparent unselected chip); selected chips
+ * override below with on-secondary-container. */
+.moumantai-chip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: transparent;
+  border-radius: inherit;
+  transition: background-color var(--moumantai-motion-duration-short2)
+    var(--moumantai-motion-easing-emphasized);
+}
+.moumantai-chip:hover::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface-variant) calc(var(--moumantai-state-hover) * 100%),
+    transparent
+  );
+}
+.moumantai-chip:focus-visible::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface-variant) calc(var(--moumantai-state-focus) * 100%),
+    transparent
+  );
+}
+.moumantai-chip:active::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface-variant) calc(var(--moumantai-state-pressed) * 100%),
+    transparent
+  );
+}
+
+.moumantai-chip.selected {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+  border-color: transparent;
+}
+.moumantai-chip.selected:hover::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-secondary-container) calc(var(--moumantai-state-hover) * 100%),
+    transparent
+  );
+}
+.moumantai-chip.selected:focus-visible::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-secondary-container) calc(var(--moumantai-state-focus) * 100%),
+    transparent
+  );
+}
+.moumantai-chip.selected:active::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-secondary-container) calc(var(--moumantai-state-pressed) * 100%),
+    transparent
+  );
+}
+
+.moumantai-chip .material-symbols-outlined,
+.moumantai-chip > i.fa-solid,
+.moumantai-chip > i.fa-regular,
+.moumantai-chip > i.fa-brands {
+  font-size: var(--moumantai-icon-size-small);
+}
+
+/* ============================================================================
+ * Card — M3 variants (filled / outlined / elevated / card_pill / pill_live).
+ *
+ * Tonal-elevation is primary (the surface-container-* level differentiates
+ * cards from background); shadow is earned and quiet (only `elevated`
+ * variant gets one in light theme; dark theme suppresses shadow entirely
+ * via identity.css overrides).
+ *
+ * Interactive cards (action attached) layer an M3 state-layer overlay on
+ * hover/focus/press — a tinted pseudo-element that adopts the on-surface
+ * color at the catalog opacity. (A shadow-amplification hover would conflate
+ * "clickable" with "elevated".)
+ *
+ * Renderer: renderers/layout.tsx · CardRenderer
+ * ============================================================================ */
+.moumantai-card {
+  position: relative;
+  border-radius: var(--moumantai-card-radius);
+  padding: var(--moumantai-card-padding);
+  overflow: hidden;
+  color: var(--md-sys-color-on-surface);
+  transition:
+    background-color var(--moumantai-motion-duration-short3) var(--moumantai-motion-easing-standard),
+    box-shadow var(--moumantai-motion-duration-short3) var(--moumantai-motion-easing-standard);
+}
+
+/* M3 spec: filled cards use surface-container-highest — strongest tonal
+ * differentiation from the bare surface so the card is unambiguously a card.
+ * (Earlier draft used surface-container-low which read as "barely there"
+ * against the surface, especially on light theme.) */
+.moumantai-card--filled {
+  background: var(--md-sys-color-surface-container-highest);
+}
+
+.moumantai-card--elevated {
+  background: var(--md-sys-color-surface-container-low);
+  box-shadow: var(--moumantai-elevation-raised);
+}
+
+.moumantai-card--outlined {
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+/* Tonal accent variants — pill-shaped containers that anchor to a semantic
+ * color role. card_pill = secondary accent (e.g. spend-tracker "30 days" tag).
+ * pill_live = error accent (e.g. diet-tracker "OVER GOAL" warning). */
+.moumantai-card--card_pill {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+  border-radius: var(--moumantai-shape-full);
+  padding: 4px 12px;
+}
+
+.moumantai-card--pill_live {
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+  border-radius: var(--moumantai-shape-full);
+  padding: 4px 12px;
+}
+
+/* M3 state-layer overlay — a transparent pseudo-element that adopts the
+ * catalog state-layer color on interaction. Inherits the card's radius so
+ * the overlay clips to the same shape. */
+.moumantai-card[data-clickable='true'] {
+  cursor: pointer;
+}
+.moumantai-card[data-clickable='true']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background-color: transparent;
+  transition: background-color var(--moumantai-motion-duration-short2)
+    var(--moumantai-motion-easing-emphasized);
+}
+.moumantai-card[data-clickable='true']:hover::after {
+  background-color: var(--moumantai-state-layer-hover);
+}
+.moumantai-card[data-clickable='true']:focus-visible::after {
+  background-color: var(--moumantai-state-layer-focus);
+}
+.moumantai-card[data-clickable='true']:active::after {
+  background-color: var(--moumantai-state-layer-pressed);
+}
+
+/* ============================================================================
+ * Box (z-stack) — paints children on top of one another via CSS Grid.
+ *
+ * All children occupy `grid-area: 1 / 1` and align within the shared cell
+ * via `place-self`. Matches Compose `Box` semantics: children render in
+ * normal flow, so the Box sizes to its largest child (no absolute
+ * positioning, no 0-height collapse in flex containers). DOM order = paint
+ * order (later children on top).
+ *
+ * `min-width: 0` and `min-height: 0` on children opt out of the default
+ * Grid auto-minimum so wide content doesn't blow out the row track.
+ * Renderer: renderers/layout.tsx · BoxRenderer
+ * ============================================================================ */
+.moumantai-box {
+  display: grid;
+}
+.moumantai-box__child {
+  /* grid-area:1/1 stacks children; default place-self:stretch keeps each
+   * wrapper at the full cell size. The wrapper is also a flex container so
+   * `alignItems`/`justifyContent` (set inline per child_alignment) position
+   * the rendered child inside the wrapper — works symmetrically for
+   * fill-width children (Card with width:100%) and intrinsic-width children
+   * (Progress circular). */
+  grid-area: 1 / 1;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ============================================================================
+ * Scaffold — framework-owned shell + LIST/CANVAS body kinds.
+ * The body class is chosen by scaffoldBodyClass() (renderer/variants.ts).
+ * Renderer: renderers/chrome.tsx · ScaffoldRenderer
+ * ============================================================================ */
+.moumantai-scaffold {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.moumantai-scaffold-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--moumantai-scaffold-body-padding);
+}
+
+/*
+ * CANVAS body kind: bounded glance frame — fills remaining space, centers
+ * content on both axes, never scrolls. For hero faces (progress ring +
+ * caption, splash glances).
+ */
+.moumantai-scaffold-body--canvas {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================================
+ * TopBar — fixed-height chrome row with nav button + title + actions.
+ * Renderer: renderers/chrome.tsx · TopBarRenderer
+ * ============================================================================ */
+.moumantai-topbar {
+  display: flex;
+  align-items: center;
+  height: var(--moumantai-topbar-height);
+  padding: 0 var(--moumantai-spacing-m);
+  flex-shrink: 0;
+  background: var(--md-sys-color-surface);
+  overflow: hidden;
+}
+
+.moumantai-topbar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--moumantai-icon-tap-target);
+  height: var(--moumantai-icon-tap-target);
+  border: none;
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
+  cursor: pointer;
+  border-radius: calc(var(--moumantai-icon-tap-target) / 2);
+  flex-shrink: 0;
+}
+
+.moumantai-topbar-nav:hover {
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-hover) * 100%),
+    transparent
+  );
+}
+.moumantai-topbar-nav:focus-visible {
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-focus) * 100%),
+    transparent
+  );
+}
+.moumantai-topbar-nav:active {
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-pressed) * 100%),
+    transparent
+  );
+}
+
+.moumantai-topbar-title {
+  font-family: inherit;
+  font-weight: 400;
+  font-size: var(--moumantai-title-large);
+  line-height: var(--moumantai-title-large-line-height);
+  color: var(--md-sys-color-on-surface);
+  flex: 1;
+  padding: 0 var(--moumantai-spacing-m);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.moumantai-topbar-actions {
+  display: flex;
+  gap: var(--moumantai-spacing-s);
+  flex-shrink: 0;
+}
+
+/* ============================================================================
+ * Progress — circular (ring) + linear (bar) variants.
+ * Renderer: renderers/feedback.tsx · ProgressRenderer
+ * ============================================================================ */
+.moumantai-progress-ring {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Constrained viewports: never overflow the parent. */
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.moumantai-progress-ring svg {
+  transform: rotate(-90deg);
+}
+
+.moumantai-progress-ring-track {
+  fill: none;
+  stroke: var(--md-sys-color-surface-container-highest);
+}
+
+.moumantai-progress-ring-fill {
+  fill: none;
+  transition: stroke-dashoffset var(--moumantai-motion-duration-medium)
+    var(--moumantai-motion-easing-standard);
+}
+
+.moumantai-progress-ring-center {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Linear variant — label / track / fill / sublabel stacked vertically. */
+.moumantai-progress-linear {
+  display: flex;
+  flex-direction: column;
+  gap: var(--moumantai-spacing-xs);
+}
+
+.moumantai-progress-linear-track {
+  width: 100%;
+  height: 4px;
+  background: var(--md-sys-color-surface-container-highest);
+  border-radius: var(--moumantai-shape-full);
+  overflow: hidden;
+}
+
+.moumantai-progress-linear-fill {
+  height: 100%;
+  background: var(--md-sys-color-primary);
+  border-radius: var(--moumantai-shape-full);
+  transition: width var(--moumantai-motion-duration-medium2)
+    var(--moumantai-motion-easing-emphasized);
+}
+
+/* ============================================================================
+ * Modal — backdrop + card, with fullscreen modifier for compact viewports.
+ * Renderer: renderers/feedback.tsx · ModalRenderer
+ * ============================================================================ */
+.moumantai-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--moumantai-z-modal);
+}
+
+.moumantai-modal-card {
+  background: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+  border-radius: var(--moumantai-dialog-radius);
+  padding: var(--moumantai-dialog-padding);
+  box-shadow: var(--moumantai-elevation-floating);
+  min-width: 200px;
+  max-width: 90%;
+  max-height: 80%;
+  overflow: auto;
+}
+
+/* Compact-viewport fullscreen modal (renderer picks the modifier when
+ * sizeClass === 'compact'). */
+.moumantai-modal-card--fullscreen {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+}
+
+/* ============================================================================
+ * TextField — base + label/hint pseudo-state animation + readonly tap-target
+ * variant used by InputOverlay.
+ * Renderer: renderers/input.tsx · TextFieldRenderer
+ * ============================================================================ */
+.moumantai-textfield {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.moumantai-textfield input,
+.moumantai-textfield textarea {
+  width: 100%;
+  padding: 16px var(--moumantai-input-padding-x);
+  padding-top: 24px;
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--moumantai-input-radius);
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
+  font-family: inherit;
+  font-weight: 400;
+  font-size: var(--moumantai-body-large);
+  line-height: var(--moumantai-body-large-line-height);
+  outline: none;
+  transition: border-color var(--moumantai-motion-duration-short)
+    var(--moumantai-motion-easing-standard);
+}
+
+.moumantai-textfield input:focus,
+.moumantai-textfield textarea:focus {
+  border-color: var(--md-sys-color-primary);
+  border-width: 2px;
+  /* 1px less padding compensates for the 1px thicker border (keeps content position stable). */
+  padding: 15px calc(var(--moumantai-input-padding-x) - 1px);
+  padding-top: 23px;
+}
+
+/* Label rests centered in the input (acts as placeholder). */
+.moumantai-textfield label {
+  position: absolute;
+  left: var(--moumantai-input-padding-x);
+  top: 20px;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: var(--moumantai-body-large);
+  line-height: var(--moumantai-body-large-line-height);
+  color: var(--md-sys-color-on-surface-variant);
+  pointer-events: none;
+  transition: all var(--moumantai-motion-duration-short) var(--moumantai-motion-easing-standard);
+}
+
+/* Label floats up when focused or has value. */
+.moumantai-textfield input:focus + label,
+.moumantai-textfield input:not(:placeholder-shown) + label,
+.moumantai-textfield textarea:focus + label,
+.moumantai-textfield textarea:not(:placeholder-shown) + label {
+  top: 4px;
+  font-size: var(--moumantai-label-small);
+  line-height: var(--moumantai-label-small-line-height);
+  color: var(--md-sys-color-primary);
+}
+
+/* Hint text: hidden by default, visible only when focused + empty. */
+.moumantai-textfield-hint {
+  position: absolute;
+  left: var(--moumantai-input-padding-x);
+  top: 24px;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: var(--moumantai-body-large);
+  line-height: var(--moumantai-body-large-line-height);
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--moumantai-motion-duration-short) var(--moumantai-motion-easing-standard);
+}
+
+.moumantai-textfield input:focus ~ .moumantai-textfield-hint,
+.moumantai-textfield textarea:focus ~ .moumantai-textfield-hint {
+  opacity: 1;
+}
+
+/* Hide hint when input has value (label is floated; hint not needed). */
+.moumantai-textfield input:not(:placeholder-shown) ~ .moumantai-textfield-hint,
+.moumantai-textfield textarea:not(:placeholder-shown) ~ .moumantai-textfield-hint {
+  opacity: 0;
+}
+
+/* Readonly tap-target shown in compact size-class — InputOverlay opens the
+ * actual input UI when this is tapped. */
+.moumantai-textfield--readonly {
+  display: flex;
+  align-items: center;
+  padding: var(--moumantai-spacing-s) var(--moumantai-spacing-m);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--moumantai-input-radius);
+  background: var(--md-sys-color-surface-container);
+}
+.moumantai-textfield-value {
+  font-size: var(--moumantai-body-medium);
+  color: var(--md-sys-color-on-surface);
+}
+
+/* ============================================================================
+ * InputOverlay — compact-mode full-screen wrapper shared by TextField,
+ * Select, and DateTimeInput. Renderer maps sizeClass === 'compact' onto
+ * this overlay (otherwise the inputs render inline).
+ * Renderer: renderers/input.tsx · InputOverlay
+ * ============================================================================ */
+.moumantai-input-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--md-sys-color-surface);
+  z-index: var(--moumantai-z-compact-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.moumantai-input-overlay-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--moumantai-spacing-m);
+  padding: var(--moumantai-spacing-l);
+  width: 100%;
+  max-width: 300px;
+}
+
+.moumantai-input-overlay-label {
+  font-size: var(--moumantai-title-medium);
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface);
+}
+
+.moumantai-input-overlay-content input,
+.moumantai-input-overlay-content select {
+  font-size: var(--moumantai-body-large);
+  padding: var(--moumantai-spacing-m);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--moumantai-input-radius);
+  background: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface);
+}
+
+/* ============================================================================
+ * CheckBox — native input + optional label.
+ * Renderer: renderers/input.tsx · CheckBoxRenderer
+ * ============================================================================ */
+.moumantai-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--moumantai-spacing-l);
+  cursor: pointer;
+  padding: var(--moumantai-spacing-m) 0;
+}
+
+.moumantai-checkbox input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--md-sys-color-primary);
+  cursor: pointer;
+}
+
+.moumantai-checkbox-label {
+  font-family: inherit;
+  font-weight: 400;
+  font-size: var(--moumantai-body-large);
+  line-height: var(--moumantai-body-large-line-height);
+  color: var(--md-sys-color-on-surface);
+}
+
+/* ============================================================================
+ * Switch — custom track + thumb (rounded toggle). `.checked` state animates
+ * thumb size + position.
+ * Renderer: renderers/input.tsx · SwitchRenderer
+ * ============================================================================ */
+.moumantai-switch {
+  display: flex;
+  align-items: center;
+  gap: var(--moumantai-spacing-l);
+  cursor: pointer;
+  padding: var(--moumantai-spacing-m) 0;
+}
+
+.moumantai-switch-track {
+  width: var(--moumantai-switch-track-w);
+  height: var(--moumantai-switch-track-h);
+  border-radius: calc(var(--moumantai-switch-track-h) / 2);
+  background: var(--md-sys-color-surface-container-highest);
+  border: 2px solid var(--md-sys-color-outline);
+  position: relative;
+  transition:
+    background-color var(--moumantai-motion-duration-medium2)
+      var(--moumantai-motion-easing-emphasized),
+    border-color var(--moumantai-motion-duration-medium2) var(--moumantai-motion-easing-emphasized);
+  flex-shrink: 0;
+}
+
+.moumantai-switch.checked .moumantai-switch-track {
+  background: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+}
+
+.moumantai-switch-thumb {
+  width: var(--moumantai-switch-thumb-sm);
+  height: var(--moumantai-switch-thumb-sm);
+  border-radius: 50%;
+  background: var(--md-sys-color-outline);
+  position: absolute;
+  top: 6px; /* M3 spec inset — not derived from track height */
+  left: 6px; /* M3 spec inset — not derived from track width */
+  transition: all var(--moumantai-motion-duration-medium2) var(--moumantai-motion-easing-emphasized);
+}
+
+.moumantai-switch.checked .moumantai-switch-thumb {
+  left: calc(var(--moumantai-switch-track-w) - var(--moumantai-switch-thumb-lg));
+  width: var(--moumantai-switch-thumb-lg);
+  height: var(--moumantai-switch-thumb-lg);
+  top: 2px; /* M3 spec inset — not derived from track height */
+  background: var(--md-sys-color-on-primary);
+}
+
+.moumantai-switch-label {
+  font-family: inherit;
+  font-weight: 400;
+  font-size: var(--moumantai-body-large);
+  line-height: var(--moumantai-body-large-line-height);
+  color: var(--md-sys-color-on-surface);
+}
+
+/* ============================================================================
+ * Slider — native range input with custom thumb.
+ * Renderer: renderers/input.tsx · SliderRenderer
+ * ============================================================================ */
+.moumantai-slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--moumantai-spacing-s);
+}
+
+.moumantai-slider input[type='range'] {
+  width: 100%;
+  height: 4px;
+  appearance: none;
+  background: var(--md-sys-color-primary-container);
+  border-radius: var(--moumantai-shape-full);
+  outline: none;
+}
+
+.moumantai-slider input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--md-sys-color-primary);
+  cursor: pointer;
+  border: none;
+  transition: transform var(--moumantai-motion-duration-short3)
+    var(--moumantai-motion-easing-emphasized);
+}
+
+.moumantai-slider input[type='range']::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.moumantai-slider input[type='range']:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+
+.moumantai-slider input[type='range']::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--md-sys-color-primary);
+  cursor: pointer;
+  border: none;
+  transition: transform var(--moumantai-motion-duration-short3)
+    var(--moumantai-motion-easing-emphasized);
+}
+
+.moumantai-slider input[type='range']:active::-moz-range-thumb {
+  transform: scale(1.15);
+}
+
+/* ============================================================================
+ * Tabs — bar + tab buttons + active underline.
+ * Renderer: renderers/input.tsx · TabsRenderer
+ * ============================================================================ */
+.moumantai-tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.moumantai-tabs-bar {
+  display: flex;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  flex-shrink: 0;
+}
+
+.moumantai-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 var(--moumantai-spacing-m);
+  border: none;
+  background: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: var(--moumantai-label-large);
+  line-height: var(--moumantai-label-large-line-height);
+  cursor: pointer;
+  position: relative;
+  transition: color var(--moumantai-motion-duration-short3)
+    var(--moumantai-motion-easing-emphasized);
+}
+
+.moumantai-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 3px;
+  background: var(--md-sys-color-primary);
+  border-radius: 3px 3px 0 0;
+  transform: scaleX(0);
+  transform-origin: center bottom;
+  transition: transform var(--moumantai-motion-duration-medium2)
+    var(--moumantai-motion-easing-emphasized);
+}
+
+.moumantai-tab.active {
+  color: var(--md-sys-color-primary);
+}
+
+.moumantai-tab.active::after {
+  transform: scaleX(1);
+}
+
+.moumantai-tabs-content {
+  flex: 1;
+  overflow: auto;
+}
+
+/* ============================================================================
+ * List — scrolling container.
+ * Renderer: renderers/data.tsx · ListRenderer
+ * ============================================================================ */
+.moumantai-list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* ============================================================================
+ * ListItem — M3 spec.
+ *
+ * 56dp min-height single-line; renderer sets inline `min-height: 72dp` when
+ * `supporting` text is present (2-line) and `88dp` for 3-line. Leading slot
+ * holds a 24dp icon / 40dp avatar / 56dp image. Headline (body-large) +
+ * supporting (body-medium) + trailing slot. State-layer overlay on
+ * hover/focus/press for interactive rows. Hairline divider between
+ * consecutive items so a row-only list reads as a structured list, not
+ * floating text.
+ *
+ * Renderer: renderers/data.tsx · ListItemRenderer
+ * ============================================================================ */
+.moumantai-list-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: var(--moumantai-list-item-height);
+  padding: var(--moumantai-spacing-m) var(--moumantai-spacing-l);
+  gap: var(--moumantai-spacing-m);
+  cursor: default;
+  color: var(--md-sys-color-on-surface);
+}
+
+/* Hairline divider between consecutive list items (M3 spec). Single-side
+ * border-top on the SECOND-and-subsequent item avoids a leading divider at
+ * the top of the list. `outline-variant` is the M3-prescribed divider color. */
+.moumantai-list-item + .moumantai-list-item {
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.moumantai-list-item[data-clickable='true'] {
+  cursor: pointer;
+}
+
+/* M3 state-layer overlay — tints with on-surface at the catalog opacity, so
+ * it works in both light and dark themes. */
+.moumantai-list-item[data-clickable='true']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: transparent;
+  transition: background-color var(--moumantai-motion-duration-short2)
+    var(--moumantai-motion-easing-emphasized);
+}
+.moumantai-list-item[data-clickable='true']:hover::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-hover) * 100%),
+    transparent
+  );
+}
+.moumantai-list-item[data-clickable='true']:focus-visible::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-focus) * 100%),
+    transparent
+  );
+}
+.moumantai-list-item[data-clickable='true']:active::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-pressed) * 100%),
+    transparent
+  );
+}
+
+.moumantai-list-item-leading {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.moumantai-list-item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--moumantai-spacing-xs);
+}
+
+.moumantai-list-item-headline {
+  font-family: inherit;
+  font-weight: 400;
+  font-size: var(--moumantai-body-large);
+  line-height: var(--moumantai-body-large-line-height);
+  color: var(--md-sys-color-on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.moumantai-list-item-supporting {
+  font-family: inherit;
+  font-weight: 400;
+  font-size: var(--moumantai-body-medium);
+  line-height: var(--moumantai-body-medium-line-height);
+  color: var(--md-sys-color-on-surface-variant);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.moumantai-list-item-trailing {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* ============================================================================
+ * Framework chrome — placeholder for unknown variants + 2D app pager
+ * (horizontal apps, vertical faces).
+ * ============================================================================ */
+.moumantai-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--moumantai-spacing-m);
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px dashed rgba(255, 0, 0, 0.3);
+  border-radius: 4px;
+  color: #ff6666;
+  font:
+    400 12px/16px 'Roboto',
+    monospace;
+}
+
+.moumantai-app-pager-horizontal {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  width: 100%;
+  height: 100%;
+  scrollbar-width: none;
+}
+
+.moumantai-app-pager-horizontal::-webkit-scrollbar {
+  display: none;
+}
+
+.moumantai-face-pager-vertical {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  height: 100%;
+}
+
+.moumantai-face-page {
+  scroll-snap-align: start;
+  min-height: 100%;
+  overflow: auto;
+}
+
+.moumantai-face-placeholder {
+  scroll-snap-align: start;
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+}
+
+.moumantai-app-pager-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #888;
+}

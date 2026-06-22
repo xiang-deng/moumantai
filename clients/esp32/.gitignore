@@ -1,0 +1,37 @@
+# ESP-IDF build artifacts
+build/
+sdkconfig
+sdkconfig.old
+
+# Managed components (downloaded by component manager)
+managed_components/
+dependencies.lock
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Font source TTFs / OTFs — separately downloadable, not checked in.
+# See assets/fonts/README.md for download URLs.
+assets/fonts/*.ttf
+assets/fonts/*.otf
+
+# Generated LVGL font C sources — rebuilt on demand from the TTFs by
+# assets/fonts/build_unified_font.py. CMake invokes the generator as a
+# build step; see components/renderer/CMakeLists.txt.
+# Three font families, split by role:
+#   moumantai_text_{14,20,28}      — primary body font (Inter + Latin + symbols + emoji + Material icons)
+#   moumantai_text_cjk_{14,20,28}  — CJK fallback chained via lv_font_t.fallback
+#   moumantai_icons_{20,24,32}     — Material Symbols only at icon-bucket sizes
+# Plus the pre-split name kept for older trees.
+components/renderer/fonts/moumantai_font_*.c
+components/renderer/fonts/moumantai_text_*.c
+components/renderer/fonts/moumantai_icons_*.c
+
+# Local dev helpers (Windows wrappers, serial capture scripts)
+_idf_wrap.bat
+_capture_*.py
+_reset_then_capture.py

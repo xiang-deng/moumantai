@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+vars:
+  WORKSPACE_ID: server
+  WORKSPACE_NAME: 'Moumantai WebSocket server + agent'
+  WORKSPACE_TYPE: service
+  RUNTIME: node
+  STACK: 'tsx + Drizzle ORM (sqlite) + Claude Agent SDK'
+tasks:
+  dev:
+    desc: 'Start server in watch mode'
+    cmds: [npm run dev]
+  start:
+    desc: 'Start server (production-style, no watch)'
+    cmds: [npm run start]
+  cli:
+    desc: 'Run moumantai CLI; pass args after `--` (e.g. `task server:cli -- config show`)'
+    cmds: ['npx tsx src/server/cli.ts {{.CLI_ARGS}}']
+  init:
+    desc: 'Set up the Moumantai workspace (interactive wizard)'
+    cmds: ['npx tsx src/server/cli.ts init']
+  workspace-path:
+    desc: 'Print the resolved Moumantai workspace path + source'
+    cmds: ['npx tsx src/server/cli.ts workspace path']
+  app-install:
+    desc: 'Install a plugin app: pass path after `--`'
+    cmds: ['npx tsx src/server/cli.ts app install {{.CLI_ARGS}}']
+  app-uninstall:
+    desc: 'Uninstall a plugin app: pass id after `--` (add --force to skip prompt)'
+    cmds: ['npx tsx src/server/cli.ts app uninstall {{.CLI_ARGS}}']
+  app-list:
+    desc: 'List installed plugin apps'
+    cmds: ['npx tsx src/server/cli.ts app list']
+  typecheck:
+    desc: 'TypeScript no-emit check'
+    cmds: [npm run typecheck]
+  test:
+    desc: 'Run unit + integration tests (Vitest)'
+    cmds: [npm run test]
+  test-watch:
+    desc: 'Vitest watch mode'
+    cmds: ["npm run 'test:watch'"]
+  test-coverage:
+    desc: 'Vitest with coverage report'
+    cmds: ["npm run 'test:coverage'"]
+  test-e2e:
+    desc: 'Run Python Playwright E2E suite (boots server)'
+    cmds: ["npm run 'test:e2e'"]
+  db-generate:
+    desc: 'Generate Drizzle migrations for plugin app DBs'
+    cmds: ["npm run 'db:generate'"]
+  wscat:
+    desc: 'Connect to a server with the protobuf wire codec; pretty-print every server frame as JSON. Pass `--` <ws-url> [--device-class PHONE] [--width 390] [--height 844] [--shape RECT] [--no-hello]'
+    dir: '../'
+    cmds: ['npx tsx scripts/wscat-protobuf.ts {{.CLI_ARGS}}']

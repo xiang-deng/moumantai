@@ -1,0 +1,7 @@
+{
+  "deviceId": "9c0b3e57-1234-4cba-bb38-afdc0c7e0001",
+  "deviceClass": "DEVICE_CLASS_WATCH",
+  "deviceProfile": { "width": 192, "height": 192, "shape": "DEVICE_SHAPE_ROUND" },
+  "currentAppId": "spend-tracker",
+  "currentFaceId": "summary"
+}

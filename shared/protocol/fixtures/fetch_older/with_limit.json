@@ -1,0 +1,5 @@
+{
+  "scope": "app:spend-tracker",
+  "beforeSeq": "100",
+  "limit": 10
+}

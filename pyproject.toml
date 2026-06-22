@@ -1,0 +1,15 @@
+[project]
+name            = "moumantai-tooling"
+version         = "0.1.0"
+description     = "Repo-level tooling: token codegen, registry generator, e2e test harness"
+license         = "MIT"
+requires-python = ">=3.12"
+dependencies    = [
+    "grpcio-tools>=1.80.0",
+    "nanopb>=0.4.9.1",
+    "pyyaml>=6.0",
+]
+
+[tool.uv]
+package           = false   # deps-only project; not a buildable package
+python-preference = "system" # use mise-managed python on PATH; don't double-install

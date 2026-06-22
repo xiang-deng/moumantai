@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+
+includes:
+  protocol: { taskfile: ./shared/protocol, dir: ./shared/protocol }
+  server: { taskfile: ./server, dir: ./server }
+  pwa: { taskfile: ./clients/pwa, dir: ./clients/pwa }
+  android: { taskfile: ./clients/android, dir: ./clients/android }
+  wear-os: { taskfile: ./clients/wear-os, dir: ./clients/wear-os }
+  esp32: { taskfile: ./clients/esp32, dir: ./clients/esp32 }
+
+tasks:
+  default:
+    desc: 'List every task across every workspace'
+    cmds: [task --list-all]
+  setup:
+    desc: 'Provision pinned toolchain (mise) + Python deps (uv)'
+    cmds:
+      - mise install
+      - uv sync
+  tokens:
+    desc: 'Regenerate design tokens for pwa + android + wear-os + esp32'
+    cmds: [uv run python scripts/generate-tokens.py]
+  icons:
+    desc: 'Regenerate the app icon for every client (PWA favicon/apple-touch/manifest + Android & Wear launcher icons) from branding/icon.source.png'
+    cmds: [uv run --with pillow python scripts/gen-icons.py]
+  lint:tokens:
+    desc: 'Drift guard: assert compact + expanded token profiles declare the same keys and identical invariant values'
+    cmds: [uv run python scripts/test-token-shape.py]
+  design-system:gen:
+    desc: 'Regenerate design-system catalog (TS / Kotlin / C / CSS) from shared/protocol/design-system/design-system.yaml'
+    cmds: [uv run python scripts/build-design-system.py]
+  design-system:gen-check:
+    desc: 'Fail if any design-system generated output is stale'
+    cmds: [uv run python scripts/build-design-system.py --check]
+  registry:
+    desc: 'Regenerate clients/registry.md from each clients/<id>/Taskfile.yml'
+    cmds: [uv run python scripts/build-registry.py]
+  registry-check:
+    desc: 'Fail if clients/registry.md is stale (run after editing a client Taskfile)'
+    cmds: [uv run python scripts/build-registry.py --check]
+  test-form-semantics:
+    desc: 'Cross-client conformance: drive server + Android + Wear from shared/protocol/fixtures/form-semantics/spec.json'
+    deps:
+      - protocol:server-form-semantics
+      - android:test-form-semantics
+      - wear-os:test-form-semantics
+  test-layout-resolution:
+    desc: 'Cross-renderer conformance: drive server + Android + Wear + ESP32 (C host-mode) resolvers from shared/protocol/fixtures/layout-resolution/spec.json'
+    deps:
+      - protocol:server-layout-resolution
+      - android:test-layout-resolution
+      - wear-os:test-layout-resolution
+      - protocol:esp32-layout-resolution
+  apps:typecheck:
+    desc: 'TypeScript no-emit check on apps/ submodule (validates plugin apps against codegen SDK Options)'
+    cmds: [npx tsc --noEmit -p apps/tsconfig.json]
+  format:
+    desc: 'Auto-format every language: Prettier/ruff/clang-format (pre-commit) + Kotlin (Spotless via Gradle)'
+    env: { PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8' }
+    cmds:
+      - uvx pre-commit run --all-files
+      - task: protocol:format
+      - task: android:format
+      - task: wear-os:format
+  format:check:
+    desc: 'Verify formatting across every language (CI gate); fails if anything is unformatted'
+    env: { PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8' }
+    cmds:
+      - uvx pre-commit run --all-files --show-diff-on-failure
+      - task: protocol:format-check
+      - task: android:format-check
+      - task: wear-os:format-check

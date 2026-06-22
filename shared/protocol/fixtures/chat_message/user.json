@@ -1,0 +1,11 @@
+{
+  "id": "61c890e6-21f3-4c3e-bdc8-4cc6b65a0011",
+  "scope": "home",
+  "conversationId": "8e3ec5b7-d7c0-49d2-9c7e-2b3a1ad9be01",
+  "role": "CHAT_ROLE_USER",
+  "text": "What is the total spend for this month?",
+  "timestamp": "2026-04-25T12:34:56Z",
+  "clientMsgId": "5b9b13a7-deba-4c25-bf66-2bd6b34f0099",
+  "status": "TURN_STATUS_RUNNING",
+  "originDeviceId": "9c0b3e57-1234-4cba-bb38-afdc0c7e0001"
+}

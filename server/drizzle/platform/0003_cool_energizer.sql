@@ -1,0 +1,2 @@
+DROP INDEX `messages_client_msg_id_unique`;--> statement-breakpoint
+CREATE UNIQUE INDEX `messages_conv_client_msg_id_unique` ON `messages` (`conversation_id`,`client_msg_id`) WHERE "messages"."client_msg_id" IS NOT NULL;

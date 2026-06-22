@@ -1,0 +1,22 @@
+{
+  "scope": "home",
+  "conversationId": "8e3ec5b7-d7c0-49d2-9c7e-2b3a1ad9be01",
+  "entries": [
+    {
+      "id": "61c890e6-21f3-4c3e-bdc8-4cc6b65a0011",
+      "seq": "7",
+      "role": "CHAT_ROLE_USER",
+      "text": "What is the total spend for this month?",
+      "createdAt": "2026-04-25T12:34:56Z",
+      "originDeviceId": "9c0b3e57-1234-4cba-bb38-afdc0c7e0001"
+    },
+    {
+      "id": "1e0c84c9-bdaa-4b66-a64a-94a7e9f8a002",
+      "seq": "8",
+      "role": "CHAT_ROLE_ASSISTANT",
+      "text": "Your total spend for April is $1,247.83 across 23 transactions.",
+      "createdAt": "2026-04-25T12:34:58Z"
+    }
+  ],
+  "hasMore": false
+}

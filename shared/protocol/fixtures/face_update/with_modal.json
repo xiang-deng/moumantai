@@ -1,0 +1,57 @@
+{
+  "scope": "app:diet-tracker",
+  "appId": "diet-tracker",
+  "faceId": "today",
+  "components": [
+    { "id": "root", "scaffold": { "topBar": "bar", "body": "content" } },
+    { "id": "bar", "topBar": { "title": { "literal": "Today" } } },
+    {
+      "id": "content",
+      "column": { "children": ["meal_count_line", "log_btn", "confirm_modal"], "spacing": 12 }
+    },
+    {
+      "id": "meal_count_line",
+      "text": {
+        "text": { "path": "/day/meal_count" },
+        "typography": "titleMedium"
+      }
+    },
+    {
+      "id": "log_btn",
+      "button": {
+        "text": { "literal": "Log meal" },
+        "emphasis": "primary",
+        "action": {
+          "tool": "view_today",
+          "args": { "modal_open": true }
+        }
+      }
+    },
+    {
+      "id": "confirm_modal",
+      "modal": {
+        "open": { "path": "/$params/modal_open" },
+        "children": ["modal_title", "modal_save"]
+      }
+    },
+    {
+      "id": "modal_title",
+      "text": { "text": { "literal": "Log a meal" }, "typography": "titleLarge" }
+    },
+    {
+      "id": "modal_save",
+      "button": {
+        "text": { "literal": "Save" },
+        "emphasis": "primary",
+        "action": {
+          "tool": "save_meal",
+          "args": { "kcal": { "path": "/$form/kcal" } }
+        }
+      }
+    }
+  ],
+  "data": {
+    "day": { "meal_count": "2 of 3" },
+    "$params": { "modal_open": false }
+  }
+}

@@ -1,0 +1,134 @@
+/* AUTO-GENERATED FROM design-system.yaml. DO NOT EDIT BY HAND.
+   Source: shared/protocol/design-system/design-system.yaml
+   Tokens are emitted by scripts/generate-tokens.py into each client. */
+
+/* --- Button variants --- */
+.moumantai-button--filled_container-error {
+  background: var(--md-sys-color-error);
+  color: var(--md-sys-color-on-error);
+}
+
+.moumantai-button--filled_container-primary {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+
+.moumantai-button--filled_container-secondary {
+  background: var(--md-sys-color-secondary);
+  color: var(--md-sys-color-on-secondary);
+}
+
+.moumantai-button--filled_container-tertiary {
+  background: var(--md-sys-color-tertiary);
+  color: var(--md-sys-color-on-tertiary);
+}
+
+.moumantai-button--filled_container-warning {
+  background: var(--md-sys-color-warning);
+  color: var(--md-sys-color-on-warning);
+}
+
+.moumantai-button--outlined_container-error {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-error);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.moumantai-button--transparent-error {
+  background: transparent;
+  color: var(--md-sys-color-error);
+}
+
+.moumantai-button--transparent-primary {
+  background: transparent;
+  color: var(--md-sys-color-primary);
+}
+
+/* --- Card variants --- */
+.moumantai-card--elevated_container-neutral {
+  background: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-on-surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.moumantai-card--filled_container-error {
+  background: var(--md-sys-color-error);
+  color: var(--md-sys-color-on-error);
+}
+
+.moumantai-card--filled_container-neutral {
+  background: var(--md-sys-color-surface-container-highest);
+  color: var(--md-sys-color-on-surface);
+}
+
+.moumantai-card--filled_container-secondary {
+  background: var(--md-sys-color-secondary);
+  color: var(--md-sys-color-on-secondary);
+}
+
+.moumantai-card--filled_container-tertiary {
+  background: var(--md-sys-color-tertiary);
+  color: var(--md-sys-color-on-tertiary);
+}
+
+.moumantai-card--filled_container-warning {
+  background: var(--md-sys-color-warning);
+  color: var(--md-sys-color-on-warning);
+}
+
+/* --- Chip variants --- */
+.moumantai-chip--outlined_container-error {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-error);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.moumantai-chip--outlined_container-neutral {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.moumantai-chip--outlined_container-secondary {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-secondary);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.moumantai-chip--outlined_container-warning {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-warning);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+/* --- Fab variants --- */
+.moumantai-fab--floating_action-primary {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+/* --- ProgressBar variants --- */
+.moumantai-progressbar--progress_bar-primary {
+  color: var(--md-sys-color-primary);
+}
+
+/* --- ProgressRing variants --- */
+.moumantai-progressring--progress_ring-primary {
+  color: var(--md-sys-color-primary);
+}
+
+/* --- Layout resolver hooks (data-parent-stretch) --- */
+[data-parent-stretch="cross_axis_fill"] {
+  width: 100%;
+}
+[data-parent-stretch="cross_axis_wrap"] {
+  width: auto;
+}
+[data-parent-stretch="none"] {
+  width: auto;
+}
+
+/* grow keyword: main-axis flex weight (flex: 1). */
+[data-grow] {
+  flex: 1;
+}

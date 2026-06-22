@@ -1,0 +1,177 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  font-size: var(--ts-13);
+  color: var(--fg-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.input {
+  padding: 12px var(--space-3);
+  background: var(--bg-2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  color: var(--fg);
+  font-size: var(--ts-15);
+  outline: none;
+  transition: border-color var(--m-fade) var(--ease-out);
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--ts-13);
+  color: var(--fg-3);
+}
+
+.errorHint {
+  color: var(--danger);
+}
+
+.segmented {
+  display: flex;
+  gap: var(--space-2);
+  background: var(--bg-2);
+  padding: 4px;
+  border-radius: var(--radius);
+}
+
+.segment {
+  flex: 1 1 0;
+  padding: 10px var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--fg-2);
+  font-size: var(--ts-15);
+  transition:
+    background var(--m-fade) var(--ease-out),
+    color var(--m-fade) var(--ease-out);
+}
+
+.segmentActive {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.deviceIdRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--bg-2);
+  padding: 10px var(--space-3);
+  border-radius: var(--radius);
+}
+
+.deviceId {
+  flex: 1 1 auto;
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+  font-size: var(--ts-13);
+  color: var(--fg);
+  word-break: break-all;
+}
+
+.copyButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  color: var(--fg-2);
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.copyButton:active {
+  background: var(--bg-pressed);
+}
+
+.copyButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.toggleLabel {
+  font-size: var(--ts-15);
+  color: var(--fg);
+}
+
+.toggle {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--hairline);
+  position: relative;
+  cursor: pointer;
+  transition:
+    background var(--m-fade) var(--ease-out),
+    border-color var(--m-fade) var(--ease-out);
+  flex-shrink: 0;
+}
+
+.toggleOn {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--fg-3);
+  transition:
+    transform var(--m-fade) var(--ease-out),
+    background var(--m-fade) var(--ease-out);
+}
+
+.toggleOn::after {
+  transform: translateX(20px);
+  background: var(--accent-fg);
+}
+
+.toggle:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.saveButton {
+  margin-top: var(--space-3);
+  height: 48px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: var(--ts-15);
+  font-weight: 500;
+  transition: transform var(--m-tap) var(--ease-out);
+}
+
+.saveButton:active {
+  transform: scale(0.98);
+}

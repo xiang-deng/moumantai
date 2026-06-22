@@ -1,0 +1,32 @@
+name: format
+
+# The only CI workflow: a formatting gate (no build/test/deploy).
+# Runs the language formatters — Prettier/ruff/clang-format via pre-commit,
+# Kotlin via Spotless. Proto formatting is gated separately by
+# `task protocol:format-check` / `protocol:gen-check`.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Prettier / ruff / clang-format (pre-commit)
+        uses: pre-commit/action@v3.0.1
+      - name: Kotlin format check (Spotless — Android)
+        run: ./gradlew :app:spotlessCheck
+        working-directory: clients/android
+      - name: Kotlin format check (Spotless — Wear OS)
+        run: ./gradlew :app:spotlessCheck
+        working-directory: clients/wear-os

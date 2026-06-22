@@ -1,0 +1,76 @@
+/* Light theme — first-paint M3 fallback.
+ *
+ * The dynamic-palette runtime overwrites these --md-sys-color-* values
+ * ~10ms after first paint. This file ships Moumantai-indigo static defaults
+ * so first paint looks correct before JS runs.
+ *
+ * The dark scheme defaults live in the auto-generated tokens.css.
+ * This file supplies the light-theme equivalents at equal specificity
+ * (overrides only when data-theme="light"). */
+
+:root[data-theme='light'] {
+  /* PWA-local aliases → M3 tokens; kept in sync by the dynamic-palette runtime. */
+  --bg: var(--md-sys-color-surface);
+  --bg-2: var(--md-sys-color-surface-container-low);
+  --bg-3: var(--md-sys-color-surface-container);
+  --bg-pressed: var(--md-sys-color-surface-container-high);
+  --fg: var(--md-sys-color-on-surface);
+  --fg-2: var(--md-sys-color-on-surface-variant);
+  --fg-3: var(--md-sys-color-outline);
+  --accent: var(--md-sys-color-primary);
+  --accent-fg: var(--md-sys-color-on-primary);
+  --accent-pressed: var(--md-sys-color-primary-container);
+
+  --danger: var(--md-sys-color-error);
+  --warn: var(--md-sys-color-tertiary);
+  --success: #1a8a5f;
+
+  /* ---- M3 light scheme — static first-paint values (Moumantai indigo seed)
+   * Runtime regenerates these on hydrate; any drift is corrected within a frame. */
+  --md-sys-color-primary: #4255cb;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #dfe0ff;
+  --md-sys-color-on-primary-container: #00115c;
+
+  --md-sys-color-secondary: #5b5d72;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #e0e1f9;
+  --md-sys-color-on-secondary-container: #181a2c;
+
+  --md-sys-color-tertiary: #77536c;
+  --md-sys-color-on-tertiary: #ffffff;
+  --md-sys-color-tertiary-container: #ffd7ef;
+  --md-sys-color-on-tertiary-container: #2d1127;
+
+  --md-sys-color-error: #ba1a1a;
+  --md-sys-color-on-error: #ffffff;
+  --md-sys-color-error-container: #ffdad6;
+  --md-sys-color-on-error-container: #410002;
+
+  /* M3 has no `warning` color role; alias it to error-container so the
+   * design-system `warning` tone degrades gracefully (matches Android). */
+  --md-sys-color-warning: var(--md-sys-color-error-container);
+  --md-sys-color-on-warning: var(--md-sys-color-on-error-container);
+
+  /* 5 surface-container levels — M3 Expressive tonal hierarchy. Keep all 5 distinct. */
+  --md-sys-color-surface: #fbf8ff;
+  --md-sys-color-on-surface: #1b1b22;
+  --md-sys-color-surface-variant: #e3e1ec;
+  --md-sys-color-on-surface-variant: #46464f;
+  --md-sys-color-surface-container-lowest: #ffffff;
+  --md-sys-color-surface-container-low: #f5f2fa;
+  --md-sys-color-surface-container: #efecf4;
+  --md-sys-color-surface-container-high: #e9e6ee;
+  --md-sys-color-surface-container-highest: #e4e1e9;
+  --md-sys-color-surface-dim: #dbd9e0;
+  --md-sys-color-surface-bright: #fbf8ff;
+  --md-sys-color-surface-tint: var(--md-sys-color-primary);
+
+  --md-sys-color-outline: #777680;
+  --md-sys-color-outline-variant: #c7c5d0;
+  --md-sys-color-inverse-surface: #303038;
+  --md-sys-color-inverse-on-surface: #f2eff8;
+  --md-sys-color-inverse-primary: #bcc2ff;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-scrim: #000000;
+}

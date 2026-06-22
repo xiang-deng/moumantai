@@ -1,0 +1,89 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-2);
+  border-radius: var(--radius);
+  margin: 0 var(--space-4) var(--space-3);
+  color: var(--fg);
+}
+
+.mic {
+  color: var(--accent);
+}
+
+.label {
+  font-size: var(--ts-15);
+  color: var(--fg-2);
+}
+
+.listening .mic {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.thinking {
+  animation: breathe 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.wave span {
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 1.5px;
+  animation: wave 0.9s ease-in-out infinite;
+}
+
+.wave span:nth-child(1) {
+  animation-delay: 0s;
+}
+.wave span:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.wave span:nth-child(3) {
+  animation-delay: 0.24s;
+}
+.wave span:nth-child(4) {
+  animation-delay: 0.36s;
+}
+.wave span:nth-child(5) {
+  animation-delay: 0.48s;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}

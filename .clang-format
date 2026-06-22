@@ -1,0 +1,13 @@
+# clang-format for hand-written ESP32 C (clients/esp32). Vendored
+# managed_components/ and generated/ are excluded via .pre-commit-config.yaml.
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 120
+BreakBeforeBraces: Attach
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
+PointerAlignment: Right
+# Never reorder #includes — order is sometimes load-bearing in C.
+SortIncludes: false

@@ -1,0 +1,111 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1776653845302,
+      "tag": "0000_gigantic_jack_flag",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1776749622871,
+      "tag": "0001_brown_tattoo",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1776755804133,
+      "tag": "0002_even_devos",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1776758126230,
+      "tag": "0003_cool_energizer",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1776931769192,
+      "tag": "0004_origin_session_id",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1777005000000,
+      "tag": "0005_face_params",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1777200000000,
+      "tag": "0006_invoke_dedup",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1777400000000,
+      "tag": "0007_devices",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1777400100000,
+      "tag": "0008_origin_device_id",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1777400200000,
+      "tag": "0009_drop_origin_session_id",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1779200000000,
+      "tag": "0010_sdk_backend",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1779300000000,
+      "tag": "0011_kind_draft_id",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1779300100000,
+      "tag": "0012_promotions",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1779400000000,
+      "tag": "0013_device_pairing",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1779400100000,
+      "tag": "0014_device_ua",
+      "breakpoints": true
+    }
+  ]
+}

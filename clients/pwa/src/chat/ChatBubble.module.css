@@ -1,0 +1,85 @@
+.rowUser,
+.rowAssistant {
+  display: flex;
+  margin: var(--space-2) 0;
+}
+
+.rowUser {
+  justify-content: flex-end;
+}
+
+.rowAssistant {
+  justify-content: flex-start;
+}
+
+/* M3 chat bubble palette.
+ *
+ * User bubble: primary-container bg + on-primary-container text. Legible
+ * across all seeded palettes (incl. amber/teal/etc.) because the M3 tonal
+ * algorithm picks on-primary-container at sufficient contrast against
+ * primary-container. (primary/on-primary — saturated fill + light text —
+ * would crash contrast on dark + low-luminance seeds.)
+ *
+ * Assistant bubble: surface-container + on-surface text. M3-spec "received
+ * message" treatment.
+ */
+.bubbleUser,
+.bubbleAssistant {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: var(--moumantai-shape-lg);
+  font-size: var(--moumantai-body-large);
+  line-height: var(--moumantai-body-large-line-height);
+}
+
+.bubbleUser {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border-bottom-right-radius: var(--moumantai-shape-xs);
+}
+
+.bubbleAssistant {
+  background: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface);
+  border-bottom-left-radius: var(--moumantai-shape-xs);
+}
+
+.text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.footer {
+  margin-top: var(--space-1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.time {
+  letter-spacing: 0.04em;
+}
+
+.playButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.playButton:active {
+  opacity: 1;
+}
+
+.sending {
+  opacity: 0.7;
+}
+
+.error {
+  outline: 1px solid var(--md-sys-color-error);
+}

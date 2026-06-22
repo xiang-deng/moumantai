@@ -1,0 +1,56 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.facePage {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+  gap: var(--space-3);
+}
+
+.miniApp {
+  /* Anchor BottomChatBar's absolutely-positioned FAB. Without a positioned
+   * ancestor, every FAB falls through to the viewport and stacks at
+   * bottom-right, intercepting taps for the wrong app's chat scope. */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Draft preview banner (dev mode) — slim cue above a previewed mini-app pager. */
+.draftBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 8px);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent, #9c27b0);
+}
+.draftBanner button {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: transparent;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.draftBanner span {
+  margin-right: auto;
+}

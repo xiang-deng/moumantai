@@ -1,0 +1,6 @@
+{
+  "scope": "home",
+  "format": "AUDIO_FORMAT_PCM16",
+  "sampleRate": 16000,
+  "final": false
+}

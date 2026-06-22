@@ -1,0 +1,181 @@
+/* M3 small top-app-bar. 64dp height; surface bg; title-large app name
+ * (proper-case, no forced lowercase). */
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 4px 0 16px;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  flex: 0 0 auto;
+}
+
+.app {
+  font-size: var(--moumantai-title-large);
+  font-weight: 400;
+  line-height: var(--moumantai-title-large-line-height);
+  color: var(--md-sys-color-on-surface);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* M3 icon button — 40dp circular tap-target with state-layer overlay. */
+.iconButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--moumantai-shape-full);
+  border: none;
+  background: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.iconButton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background-color: transparent;
+  transition: background-color var(--moumantai-motion-duration-short2)
+    var(--moumantai-motion-easing-emphasized);
+}
+.iconButton:hover::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-hover) * 100%),
+    transparent
+  );
+}
+.iconButton:focus-visible::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-focus) * 100%),
+    transparent
+  );
+}
+.iconButton:active::after {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-on-surface) calc(var(--moumantai-state-pressed) * 100%),
+    transparent
+  );
+}
+
+.iconButton .material-symbols-rounded {
+  font-size: 24px;
+  font-variation-settings:
+    'opsz' 24,
+    'wght' 400,
+    'FILL' 0,
+    'GRAD' 0;
+}
+
+.statusIcon {
+  font-size: 18px;
+  font-variation-settings:
+    'opsz' 20,
+    'wght' 500,
+    'FILL' 0,
+    'GRAD' 0;
+}
+.connected {
+  color: var(--md-sys-color-primary);
+}
+.disconnected {
+  color: var(--md-sys-color-outline);
+}
+.connecting {
+  color: var(--md-sys-color-tertiary);
+  animation: status-spin 1s linear infinite;
+}
+
+@keyframes status-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- Agent-dot signature ---- */
+.agentDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
+.agentDotIdle {
+  background: var(--md-sys-color-primary-container);
+  opacity: 0.5;
+}
+
+.agentDotListening {
+  background: var(--md-sys-color-primary);
+  animation: agent-pulse 1.2s ease-in-out infinite;
+}
+
+.agentDotThinking {
+  background: var(--md-sys-color-primary);
+  animation: agent-breathe 1.5s ease-in-out infinite;
+}
+
+.agentDotSpeaking {
+  background: var(--md-sys-color-primary);
+  animation: agent-bars 0.7s ease-in-out infinite;
+}
+
+@keyframes agent-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--md-sys-color-primary) 50%, transparent);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--md-sys-color-primary) 0%, transparent);
+  }
+}
+@keyframes agent-breathe {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes agent-bars {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agentDotListening,
+  .agentDotThinking,
+  .agentDotSpeaking,
+  .connecting {
+    animation: none;
+  }
+}
